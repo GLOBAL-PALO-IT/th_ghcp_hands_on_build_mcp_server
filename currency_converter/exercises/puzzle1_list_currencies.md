@@ -23,9 +23,10 @@ server.tool(
 );
 ```
 
-### frankfurter.app API
-- URL สำหรับดูรายการสกุลเงิน: `https://api.frankfurter.app/currencies`
-- ส่งคืน JSON object เช่น `{ "USD": "United States Dollar", "THB": "Thai Baht", ... }`
+### ExchangeRate-API (Open)
+- URL สำหรับดูรายการสกุลเงิน: `https://open.er-api.com/v6/latest/USD`
+- ส่งคืน JSON object เช่น `{ "result": "success", "base_code": "USD", "rates": { "USD": 1, "THB": 34.5, "EUR": 0.92, ... } }`
+- เราจะดึง key จาก `rates` มาแสดงเป็นรายการสกุลเงิน
 
 ---
 
@@ -37,7 +38,7 @@ server.tool(
 |----------|----------|----------|
 | `___BLANK_3___` | ชื่อของ tool | `"list_currencies"` |
 | `___BLANK_4___` | คำอธิบาย tool | `"แสดงรายการสกุลเงินทั้งหมดที่รองรับ"` |
-| `___BLANK_5___` | URL ของ API | `"https://api.frankfurter.app/currencies"` |
+| `___BLANK_5___` | URL ของ API | `"https://open.er-api.com/v6/latest/USD"` |
 | `___BLANK_6___` | ข้อความนำหน้ารายการ | `"สกุลเงินที่รองรับ:\n"` |
 
 ---
@@ -55,9 +56,9 @@ server.tool(
 <details>
 <summary>Hint 2: URL ต้องใส่อะไร?</summary>
 
-ใน frankfurter.app API — endpoint สำหรับดูรายการสกุลเงินคือ:
+ExchangeRate-API — endpoint สำหรับดูรายการสกุลเงิน (ดึงจาก rates keys):
 ```
-https://api.frankfurter.app/currencies
+https://open.er-api.com/v6/latest/USD
 ```
 
 </details>
@@ -71,12 +72,14 @@ server.tool(
   "แสดงรายการสกุลเงินทั้งหมดที่รองรับ",
   {},
   async () => {
-    const response = await fetch("https://api.frankfurter.app/currencies");
-    const data = (await response.json()) as Record<string, string>;
+    const response = await fetch("https://open.er-api.com/v6/latest/USD");
+    const data = (await response.json()) as {
+      result: string;
+      base_code: string;
+      rates: Record<string, number>;
+    };
 
-    const currencyList = Object.entries(data)
-      .map(([code, name]) => `${code}: ${name}`)
-      .join("\n");
+    const currencyList = Object.keys(data.rates).join(", ");
 
     return {
       content: [

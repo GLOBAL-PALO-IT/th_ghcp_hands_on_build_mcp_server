@@ -36,9 +36,10 @@ server.tool(
 );
 ```
 
-### frankfurter.app API — อัตราแลกเปลี่ยน
-- URL: `https://api.frankfurter.app/latest?from=USD&to=THB`
-- ส่งคืน: `{ "base": "USD", "date": "2024-01-15", "rates": { "THB": 34.5 } }`
+### ExchangeRate-API — อัตราแลกเปลี่ยน
+- URL: `https://open.er-api.com/v6/latest/USD`
+- ส่งคืน: `{ "result": "success", "base_code": "USD", "time_last_update_utc": "Wed, 01 Apr 2026 00:02:31 +0000", "rates": { "THB": 34.5, "EUR": 0.92, ... } }`
+- เปลี่ยน `USD` ใน URL เป็นสกุลเงินต้นทางที่ต้องการ
 
 ---
 
@@ -48,32 +49,28 @@ server.tool(
 
 | ช่องว่าง | คำอธิบาย | คำตอบ |
 |----------|----------|-------|
-| `___BLANK_7___` | Zod schema สำหรับ `from` | `string().length(3).describe("รหัสสกุลเงินต้นทาง เช่น USD")` |
-| `___BLANK_8___` | Zod schema สำหรับ `to` | `string().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB")` |
-| `___BLANK_9___` | URL สำหรับเรียก API | ดู Hint ด้านล่าง |
+| `___BLANK_7___` | ชนิดข้อมูล Zod สำหรับ `from` | `"string"` |
+| `___BLANK_8___` | ชนิดข้อมูล Zod สำหรับ `to` | `"string"` |
+| `___BLANK_9___` | API endpoint | `"latest"` |
+| `___BLANK_10___` | ชื่อ property ที่เก็บอัตราแลกเปลี่ยน | `"rates"` |
 
 ---
 
 ## 💡 Hints
 
 <details>
-<summary>Hint 1: Zod schema เขียนยังไง?</summary>
+<summary>Hint 1: ชนิดข้อมูล Zod เขียนยังไง?</summary>
 
-สกุลเงินมีรูปแบบเป็นตัวอักษร 3 ตัว (เช่น USD, THB) ดังนั้น:
-```typescript
-z.string().length(3).describe("รหัสสกุลเงินต้นทาง เช่น USD")
-```
+สกุลเงินเป็นตัวอักษร — ชนิดข้อมูลคือ `string`
+โค้ดที่เหลือ `.length(3).describe(...)` เขียนให้แล้ว!
 
 </details>
 
 <details>
-<summary>Hint 2: URL ต้องประกอบยังไง?</summary>
+<summary>Hint 2: API endpoint คืออะไร?</summary>
 
-ใช้ template literal ประกอบ URL:
-```typescript
-`https://api.frankfurter.app/latest?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
-```
-> 💡 `encodeURIComponent()` ช่วยป้องกัน URL injection
+URL เต็มคือ `https://open.er-api.com/v6/latest/{from}`
+ส่วน `https://open.er-api.com/v6/` เขียนให้แล้ว — เติมแค่ `latest`
 
 </details>
 
@@ -89,11 +86,12 @@ server.tool(
     to: z.string().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB"),
   },
   async ({ from, to }) => {
-    const url = `https://api.frankfurter.app/latest?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+    const url = `https://open.er-api.com/v6/latest/${encodeURIComponent(from)}`;
     const response = await fetch(url);
     const data = (await response.json()) as {
-      base: string;
-      date: string;
+      result: string;
+      base_code: string;
+      time_last_update_utc: string;
       rates: Record<string, number>;
     };
 
@@ -103,7 +101,7 @@ server.tool(
       content: [
         {
           type: "text" as const,
-          text: `อัตราแลกเปลี่ยน: 1 ${from.toUpperCase()} = ${rate} ${to.toUpperCase()} (ข้อมูลวันที่ ${data.date})`,
+          text: `อัตราแลกเปลี่ยน: 1 ${from.toUpperCase()} = ${rate} ${to.toUpperCase()} (อัปเดตล่าสุด: ${data.time_last_update_utc})`,
         },
       ],
     };

@@ -12,18 +12,16 @@ z.number().positive()   // ตัวเลขที่มากกว่า 0
 z.number().positive().describe("คำอธิบาย")  // เพิ่มคำอธิบาย
 ```
 
-### frankfurter.app API — แปลงเงิน
-- URL: `https://api.frankfurter.app/latest?amount=100&from=USD&to=THB`
-- ส่งคืน: `{ "amount": 100, "base": "USD", "date": "2024-01-15", "rates": { "THB": 3450.0 } }`
-- สังเกตว่า `rates.THB` คือผลลัพธ์ที่คำนวณแล้ว!
+### ExchangeRate-API — แปลงเงิน
+- URL: `https://open.er-api.com/v6/latest/USD` (ใส่สกุลเงินต้นทางแทน USD)
+- ส่งคืน: `{ "result": "success", "base_code": "USD", "time_last_update_utc": "...", "rates": { "THB": 34.5, ... } }`
+- API นี้ไม่รองรับ `amount` parameter — ต้องคำนวณเอง: `amount * rate`
 
-### การดึงค่าจาก Object
+### การคำนวณผลลัพธ์
 ```typescript
-const data = { rates: { THB: 3450.0, EUR: 0.92 } };
-const result = data.rates["THB"]; // 3450.0
-// หรือใช้ตัวแปร
-const to = "THB";
-const result = data.rates[to.toUpperCase()]; // 3450.0
+const rate = data.rates["THB"]; // 34.5
+const amount = 100;
+const result = amount * rate;   // 3450.0
 ```
 
 ---
@@ -34,46 +32,34 @@ const result = data.rates[to.toUpperCase()]; // 3450.0
 
 | ช่องว่าง | คำอธิบาย | คำตอบ |
 |----------|----------|-------|
-| `___BLANK_10___` | Zod schema สำหรับ `amount` | `number().positive().describe("จำนวนเงินที่ต้องการแปลง")` |
-| `___BLANK_11___` | URL สำหรับเรียก API (พร้อม amount) | ดู Hint ด้านล่าง |
-| `___BLANK_12___` | ดึงผลลัพธ์จาก response | `data.rates[to.toUpperCase()]` |
+| `___BLANK_11___` | ชนิดข้อมูล Zod สำหรับ `amount` | `"number"` |
+| `___BLANK_12___` | ตัวแปรที่เก็บจำนวนเงิน (ใช้คูณกับ rate) | `"amount"` |
 
 ---
 
 ## 💡 Hints
 
 <details>
-<summary>Hint 1: Zod schema สำหรับจำนวนเงิน</summary>
+<summary>Hint 1: ชนิดข้อมูล Zod สำหรับจำนวนเงิน</summary>
 
-จำนวนเงินต้องเป็นตัวเลขที่มากกว่า 0:
-```typescript
-z.number().positive().describe("จำนวนเงินที่ต้องการแปลง")
-```
+จำนวนเงินเป็นตัวเลข — ชนิดข้อมูลคือ `number`
+โค้ดที่เหลือ `.positive().describe(...)` เขียนให้แล้ว!
 
 </details>
 
 <details>
-<summary>Hint 2: URL ต้องประกอบยังไง?</summary>
+<summary>Hint 2: คำนวณผลลัพธ์ยังไง?</summary>
 
-เหมือน Puzzle 2 แต่เพิ่ม `amount` เข้าไป:
+API ไม่คำนวณ amount ให้ — ต้องเอา amount คูณกับ rate เอง:
 ```typescript
-`https://api.frankfurter.app/latest?amount=${amount}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
+const result = amount * rate;
 ```
+เติมแค่ชื่อตัวแปร `amount`
 
 </details>
 
 <details>
-<summary>Hint 3: ดึงผลลัพธ์ยังไง?</summary>
-
-API ส่งผลลัพธ์มาใน `data.rates` โดย key คือรหัสสกุลเงินปลายทาง:
-```typescript
-const result = data.rates[to.toUpperCase()];
-```
-
-</details>
-
-<details>
-<summary>Hint 4: ดูเฉลยเต็ม</summary>
+<summary>Hint 3: ดูเฉลยเต็ม</summary>
 
 ```typescript
 server.tool(
@@ -85,22 +71,23 @@ server.tool(
     to: z.string().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB"),
   },
   async ({ amount, from, to }) => {
-    const url = `https://api.frankfurter.app/latest?amount=${amount}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+    const url = `https://open.er-api.com/v6/latest/${encodeURIComponent(from)}`;
     const response = await fetch(url);
     const data = (await response.json()) as {
-      amount: number;
-      base: string;
-      date: string;
+      result: string;
+      base_code: string;
+      time_last_update_utc: string;
       rates: Record<string, number>;
     };
 
-    const result = data.rates[to.toUpperCase()];
+    const rate = data.rates[to.toUpperCase()];
+    const result = amount * rate;
 
     return {
       content: [
         {
           type: "text" as const,
-          text: `💰 ${amount} ${from.toUpperCase()} = ${result} ${to.toUpperCase()}\n📅 อัตราแลกเปลี่ยน ณ วันที่ ${data.date}`,
+          text: `💰 ${amount} ${from.toUpperCase()} = ${result} ${to.toUpperCase()}\n📅 อัปเดตล่าสุด: ${data.time_last_update_utc}`,
         },
       ],
     };
