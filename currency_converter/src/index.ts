@@ -15,18 +15,21 @@ const server = new McpServer({
 // ===== Puzzle 1: Tool — list_currencies =====
 // Tool นี้แสดงรายการสกุลเงินทั้งหมดที่ API รองรับ
 // ไม่มี input parameter
+// API ที่ใช้: https://open.er-api.com/v6/latest/USD (ดึง key จาก rates มาแสดง)
 server.tool(
     "___BLANK_3___",           // ใส่ชื่อ tool เช่น "list_currencies"
     "___BLANK_4___",           // ใส่คำอธิบาย tool เช่น "แสดงรายการสกุลเงินทั้งหมดที่รองรับ"
     {},                        // ไม่มี input parameters
     async () => {
-        const response = await fetch("___BLANK_5___"); // ใส่ URL ของ API: https://api.frankfurter.app/currencies
-        const data = (await response.json()) as Record<string, string>;
+        const response = await fetch("___BLANK_5___"); // ใส่ URL ของ API: https://open.er-api.com/v6/latest/USD
+        const data = (await response.json()) as {
+            result: string;
+            base_code: string;
+            rates: Record<string, number>;
+        };
 
-        // แปลง object เป็น string แสดงผล
-        const currencyList = Object.entries(data)
-            .map(([code, name]) => `${code}: ${name}`)
-            .join("\n");
+        // แปลง rates keys เป็น string แสดงผล
+        const currencyList = Object.keys(data.rates).join(", ");
 
         return {
             content: [
@@ -42,30 +45,32 @@ server.tool(
 // ===== Puzzle 2: Tool — get_exchange_rate =====
 // Tool นี้ดูอัตราแลกเปลี่ยนระหว่าง 2 สกุลเงิน
 // ต้องมี input: from (สกุลเงินต้นทาง) และ to (สกุลเงินปลายทาง)
+// API ที่ใช้: https://open.er-api.com/v6/latest/{from}
 server.tool(
     "get_exchange_rate",
     "ดูอัตราแลกเปลี่ยนระหว่างสกุลเงิน",
     {
-        from: z.___BLANK_7___,   // ใส่ Zod schema: string().length(3).describe("รหัสสกุลเงินต้นทาง เช่น USD")
-        to: z.___BLANK_8___,     // ใส่ Zod schema: string().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB")
+        from: z.___BLANK_7___().length(3).describe("รหัสสกุลเงินต้นทาง เช่น USD"),   // ใส่ชนิดข้อมูล Zod เช่น "string"
+        to: z.___BLANK_8___().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB"),     // ใส่ชนิดข้อมูล Zod เช่น "string"
     },
     async ({ from, to }) => {
         // สร้าง URL สำหรับเรียก API
-        const url = `___BLANK_9___`; // ใส่ URL: https://api.frankfurter.app/latest?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}
+        const url = `https://open.er-api.com/v6/___BLANK_9___/${encodeURIComponent(from)}`; // ใส่ API endpoint เช่น "latest"
         const response = await fetch(url);
         const data = (await response.json()) as {
-            base: string;
-            date: string;
+            result: string;
+            base_code: string;
+            time_last_update_utc: string;
             rates: Record<string, number>;
         };
 
-        const rate = data.rates[to.toUpperCase()];
+        const rate = data.___BLANK_10___[to.toUpperCase()]; // ใส่ชื่อ property ที่เก็บอัตราแลกเปลี่ยน เช่น "rates"
 
         return {
             content: [
                 {
                     type: "text" as const,
-                    text: `อัตราแลกเปลี่ยน: 1 ${from.toUpperCase()} = ${rate} ${to.toUpperCase()} (ข้อมูลวันที่ ${data.date})`,
+                    text: `อัตราแลกเปลี่ยน: 1 ${from.toUpperCase()} = ${rate} ${to.toUpperCase()} (อัปเดตล่าสุด: ${data.time_last_update_utc})`,
                 },
             ],
         };
@@ -75,32 +80,34 @@ server.tool(
 // ===== Puzzle 3: Tool — convert_currency =====
 // Tool นี้แปลงจำนวนเงินจากสกุลหนึ่งไปอีกสกุลหนึ่ง
 // ต้องมี input: amount, from, to
+// API นี้ไม่รองรับ amount parameter — ต้องคำนวณเอง: amount * rate
 server.tool(
     "convert_currency",
     "แปลงจำนวนเงินจากสกุลเงินหนึ่งไปยังอีกสกุลเงินหนึ่ง",
     {
-        amount: z.___BLANK_10___, // ใส่ Zod schema: number().positive().describe("จำนวนเงินที่ต้องการแปลง")
+        amount: z.___BLANK_11___().positive().describe("จำนวนเงินที่ต้องการแปลง"), // ใส่ชนิดข้อมูล Zod เช่น "number"
         from: z.string().length(3).describe("รหัสสกุลเงินต้นทาง เช่น USD"),
         to: z.string().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB"),
     },
     async ({ amount, from, to }) => {
-        // สร้าง URL สำหรับเรียก API พร้อมจำนวนเงิน
-        const url = `___BLANK_11___`; // ใส่ URL: https://api.frankfurter.app/latest?amount=${amount}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}
+        // เรียก API ดึงอัตราแลกเปลี่ยน
+        const url = `https://open.er-api.com/v6/latest/${encodeURIComponent(from)}`;
         const response = await fetch(url);
         const data = (await response.json()) as {
-            amount: number;
-            base: string;
-            date: string;
+            result: string;
+            base_code: string;
+            time_last_update_utc: string;
             rates: Record<string, number>;
         };
 
-        const result = ___BLANK_12___; // ดึงผลลัพธ์จาก data: data.rates[to.toUpperCase()]
+        const rate = data.rates[to.toUpperCase()];
+        const result = ___BLANK_12___ * rate; // ใส่ตัวแปรที่เก็บจำนวนเงิน เช่น "amount"
 
         return {
             content: [
                 {
                     type: "text" as const,
-                    text: `💰 ${amount} ${from.toUpperCase()} = ${result} ${to.toUpperCase()}\n📅 อัตราแลกเปลี่ยน ณ วันที่ ${data.date}`,
+                    text: `💰 ${amount} ${from.toUpperCase()} = ${result} ${to.toUpperCase()}\n📅 อัปเดตล่าสุด: ${data.time_last_update_utc}`,
                 },
             ],
         };
