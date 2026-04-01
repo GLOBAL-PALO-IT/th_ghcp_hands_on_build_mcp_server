@@ -1,0 +1,11 @@
+{
+    "servers": {
+        "currency-converter": {
+            "type": "stdio",
+            "command": "node",
+            "args": [
+                "currency_converter/dist/index.js"
+            ]
+        }
+    }
+}
