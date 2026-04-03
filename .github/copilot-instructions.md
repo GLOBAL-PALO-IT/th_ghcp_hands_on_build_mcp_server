@@ -22,12 +22,22 @@ Participants will build MCP servers step-by-step by completing puzzle-like exerc
 
 ## 🚀 Steps to Build an MCP Server
 
+### Approach: **Server-First, Then Add Tools Incrementally**
+
+The workshop follows a **"blank server first"** approach — participants start by creating a minimal MCP server with no tools, verify the handshake with VS Code, and then add tools one by one. This ensures participants understand the connection layer before diving into tool implementation.
+
 | # | Step | Description |
 |---|------|-------------|
-| 1 | **Tool Creation** | Start by creating a simple tool that performs a specific function. |
-| 2 | **Tool Invocation** | Learn how to invoke the tool you created and see its output. |
-| 3 | **Server Setup** | Set up a basic MCP server to host your tool. |
-| 4 | **VS Code Integration** | Integrate your MCP server with Visual Studio Code for easier development and testing. |
-| 5 | **Function Calls** | Implement function calls within your MCP server to allow for more complex interactions and functionalities. |
+| 1 | **Blank Server Setup + VS Code Integration** | Create a minimal MCP server (no tools or a single empty tool) and connect it to VS Code. Verify the handshake is successful — the server appears in VS Code and responds to protocol messages. This proves the MCP connection works before writing any business logic. |
+| 2 | **Implement Tool 1** | Add the first tool to the server (e.g., `list_currencies`, `search_location`, `list_code_reviews`). Each tool should be in its own **separate file** for clarity. Build, reconnect, and verify the tool appears and works in VS Code. |
+| 3 | **Implement Tool 2** | Add the second tool (e.g., `get_exchange_rate`, `get_current_weather`, `get_project_structure`). Again in a separate file. Build, reconnect, and verify. |
+| 4 | **Implement Tool 3** | Add the third tool (e.g., `convert_currency`, `get_forecast`, `get_team_member`). Separate file. Build, reconnect, and verify. |
+| 5 | **Overall Picture & Review** | Review the complete MCP server with all tools registered. Participants now understand the full architecture: server creation → transport connection → tool registration → tool implementation. Discuss patterns, best practices, and how to extend further. |
 
-> By following these steps, you will gain practical experience in building and deploying an MCP server, enabling you to create powerful tools and applications that can interact with language models effectively.
+### Key Principles
+
+- **Verify at each step**: After every change, build and reconnect to VS Code to confirm it works.
+- **Separate files per tool**: Each tool implementation lives in its own file to keep things organized and easy to follow.
+- **Incremental complexity**: Start with the simplest tool (no input), then progress to tools with input validation (Zod schemas), and finally tools with more complex logic.
+
+> By following these steps, participants first gain confidence that the MCP plumbing works, then progressively build up functionality tool-by-tool, ending with a complete understanding of how MCP servers are structured and deployed.

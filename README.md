@@ -88,3 +88,45 @@ currency_converter/
 | รายการสกุลเงิน | `https://api.frankfurter.app/currencies` |
 | อัตราแลกเปลี่ยน | `https://api.frankfurter.app/latest?from=USD&to=THB` |
 | แปลงเงิน | `https://api.frankfurter.app/latest?amount=100&from=USD&to=THB` |
+
+---
+
+## 🥭 Mango Company Server — HTTP Remote MCP Server
+
+**ระดับชั้น**: Intermediate 📚
+
+เพิ่มเติม project ที่ใช้ **HTTP Remote** (SSE Transport) แทน Stdio
+
+### 📋 สิ่งที่จะได้เรียนรู้
+
+| เรื่อง | รายละเอียด |
+|--------|-----------|
+| HTTP Transport | ใช้ Express.js + SSE แทน Stdio |
+| Session Management | จัดการ session สำหรับ HTTP clients |
+| Mock Data | เก็บและจัดการข้อมูลจำลอง |
+| Multiple Tools | 6 tools สำหรับ code review, project structure, team info |
+
+### 📂 สิ่งที่ Mango Company Server เก็บ
+
+1. **Code Reviews** — รายการและรายละเอียด code review
+2. **Project Structures** — โครงสร้างโปรเจค (Java, React, Flutter)
+3. **Team Members** — ข้อมูลสมาชิกทีม
+
+### 🚀 ด้วย Blank ที่ต้องเติม
+
+- **15 ช่องว่าง** ในไฟล์ `src/index.ts`
+- **6 tools** ที่ต้องสร้าง
+- โครงสร้างคล้ายกับ currency_converter แต่ใหญ่ขึ้น
+
+### 🎯 เริ่มต้น
+
+```bash
+cd mango_company_server
+npm install
+npm run build
+npm start
+```
+
+Server รันที่ `http://localhost:3002`
+
+📖 ศึกษารายละเอียดใน [mango_company_server/README.md](mango_company_server/README.md)

@@ -1,8 +1,8 @@
-# 🧩 Puzzle 1: สร้าง Tool — list_currencies
+# 🧩 Puzzle 1: สร้าง Tool — list_code_reviews
 
 ## 📖 เป้าหมาย
 เรียนรู้การสร้าง MCP Tool ด้วย `server.tool()` — Tool แรกของเรา!
-Tool นี้จะ**แสดงรายการสกุลเงินทั้งหมด**ที่ API รองรับ (ไม่ต้องรับ input ใดๆ)
+Tool นี้จะ**แสดงรายการ Code Review ทั้งหมด**ที่เก็บไว้ใน HTTP Server (ไม่ต้องรับ input ใดๆ)
 
 ## 🔧 ความรู้ที่ต้องใช้
 
@@ -23,10 +23,29 @@ server.tool(
 );
 ```
 
-### ExchangeRate-API (Open)
-- URL สำหรับดูรายการสกุลเงิน: `https://open.er-api.com/v6/latest/USD`
-- ส่งคืน JSON object เช่น `{ "result": "success", "base_code": "USD", "rates": { "USD": 1, "THB": 34.5, "EUR": 0.92, ... } }`
-- เราจะดึง key จาก `rates` มาแสดงเป็นรายการสกุลเงิน
+### Mango Company API (HTTP Remote)
+- URL สำหรับดูรายการ Code Review: `http://localhost:3000/api/code-reviews`
+- ส่งคืน JSON object เช่น:
+```json
+{
+  "result": "success",
+  "data": [
+    {
+      "id": "CR001",
+      "title": "Review Authentication System",
+      "author": "Alice",
+      "date": "2024-03-01"
+    },
+    {
+      "id": "CR002",
+      "title": "Review Database Design",
+      "author": "Bob",
+      "date": "2024-03-02"
+    }
+  ]
+}
+```
+- เราจะแสดงรายการ Code Review ทั้งหมดจากข้อมูล array
 
 ---
 
@@ -36,10 +55,10 @@ server.tool(
 
 | ช่องว่าง | คำอธิบาย | ตัวอย่าง |
 |----------|----------|----------|
-| `___BLANK_3___` | ชื่อของ tool | `"list_currencies"` |
-| `___BLANK_4___` | คำอธิบาย tool | `"แสดงรายการสกุลเงินทั้งหมดที่รองรับ"` |
-| `___BLANK_5___` | URL ของ API | `"https://open.er-api.com/v6/latest/USD"` |
-| `___BLANK_6___` | ข้อความนำหน้ารายการ | `"สกุลเงินที่รองรับ:\n"` |
+| `___BLANK_3___` | ชื่อของ tool | `"list_code_reviews"` |
+| `___BLANK_4___` | คำอธิบาย tool | `"แสดงรายการ Code Review ทั้งหมด"` |
+| `___BLANK_5___` | URL ของ API | `"http://localhost:3000/api/code-reviews"` |
+| `___BLANK_6___` | ข้อความนำหน้ารายการ | `"Code Review ทั้งหมด:\n"` |
 
 ---
 
@@ -49,16 +68,16 @@ server.tool(
 <summary>Hint 1: ชื่อ tool ควรตั้งอย่างไร?</summary>
 
 ชื่อ tool ควรเป็น snake_case และบอกได้ว่า tool ทำอะไร
-เช่น `list_currencies` หมายถึง "แสดงรายการสกุลเงิน"
+เช่น `list_code_reviews` หมายถึง "แสดงรายการ Code Review"
 
 </details>
 
 <details>
 <summary>Hint 2: URL ต้องใส่อะไร?</summary>
 
-ExchangeRate-API — endpoint สำหรับดูรายการสกุลเงิน (ดึงจาก rates keys):
+Mango Company API — endpoint สำหรับดูรายการ Code Review:
 ```
-https://open.er-api.com/v6/latest/USD
+http://localhost:3000/api/code-reviews
 ```
 
 </details>
@@ -68,24 +87,30 @@ https://open.er-api.com/v6/latest/USD
 
 ```typescript
 server.tool(
-  "list_currencies",
-  "แสดงรายการสกุลเงินทั้งหมดที่รองรับ",
+  "list_code_reviews",
+  "แสดงรายการ Code Review ทั้งหมด",
   {},
   async () => {
-    const response = await fetch("https://open.er-api.com/v6/latest/USD");
+    const response = await fetch("http://localhost:3000/api/code-reviews");
     const data = (await response.json()) as {
       result: string;
-      base_code: string;
-      rates: Record<string, number>;
+      data: Array<{
+        id: string;
+        title: string;
+        author: string;
+        date: string;
+      }>;
     };
 
-    const currencyList = Object.keys(data.rates).join(", ");
+    const reviewList = data.data
+      .map((review) => `- ${review.title} (by ${review.author} on ${review.date})`)
+      .join("\n");
 
     return {
       content: [
         {
           type: "text" as const,
-          text: `สกุลเงินที่รองรับ:\n${currencyList}`,
+          text: `Code Review ทั้งหมด:\n${reviewList}`,
         },
       ],
     };
