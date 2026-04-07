@@ -14,7 +14,7 @@ export function registerSearchLocation(server: McpServer) {
             query: z.string().describe("ชื่อเมืองที่ต้องการค้นหา เช่น Bangkok"),
         },
         async ({ query }) => {
-            const url = `https://geocoding-api.open-meteo.com/v1/___BLANK_3___?name=${encodeURIComponent(query)}&count=5&language=th`; // ใส่ endpoint เช่น "search"
+            const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=th`; // ใส่ endpoint เช่น "search"
             const response = await fetch(url);
             const data = (await response.json()) as {
                 results?: Array<{
@@ -40,7 +40,7 @@ export function registerSearchLocation(server: McpServer) {
                 content: [
                     {
                         type: "text" as const,
-                        text: `___BLANK_4___${locationList}`, // ใส่ข้อความนำหน้า เช่น "ผลการค้นหาตำแหน่ง:\n"
+                        text: `___BLANK_3___${locationList}`, // ใส่ข้อความนำหน้า เช่น "ผลการค้นหาตำแหน่ง:\n"
                     },
                 ],
             };
