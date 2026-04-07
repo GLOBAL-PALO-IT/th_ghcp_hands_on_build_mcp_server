@@ -1,48 +1,5 @@
 # 🧩 Puzzle 3: เพิ่ม Tool — get_exchange_rate
 
-## 📖 เป้าหมาย
-เรียนรู้การกำหนด **input schema ด้วย Zod** — Tool นี้รับสกุลเงินต้นทางและปลายทาง แล้วแสดงอัตราแลกเปลี่ยน
-
-## 🔧 ความรู้ที่ต้องใช้
-
-### Zod คืออะไร?
-Zod เป็น library สำหรับกำหนด schema (รูปแบบข้อมูล) ใน TypeScript ใช้กับ MCP เพื่อบอกว่า tool รับ input อะไรบ้าง
-
-```typescript
-import { z } from "zod";
-
-// ตัวอย่าง Zod schema
-z.string()                          // ต้องเป็น string
-z.string().length(3)                // string ยาว 3 ตัวอักษร
-z.string().describe("คำอธิบาย")     // เพิ่มคำอธิบายให้ LLM เข้าใจ
-z.number()                          // ต้องเป็นตัวเลข
-z.number().positive()               // ตัวเลขที่มากกว่า 0
-```
-
-### `server.tool()` กับ Input Schema
-```typescript
-server.tool(
-  "tool_name",
-  "description",
-  {
-    // กำหนด input parameters ด้วย Zod
-    param1: z.string().describe("คำอธิบาย param1"),
-    param2: z.number().describe("คำอธิบาย param2"),
-  },
-  async ({ param1, param2 }) => {
-    // ใช้ param1, param2 ได้เลย
-    return { content: [{ type: "text", text: "ผลลัพธ์" }] };
-  }
-);
-```
-
-### ExchangeRate-API — อัตราแลกเปลี่ยน
-- URL: `https://open.er-api.com/v6/latest/USD`
-- ส่งคืน: `{ "result": "success", "base_code": "USD", "time_last_update_utc": "...", "rates": { "THB": 34.5, "EUR": 0.92, ... } }`
-- เปลี่ยน `USD` ใน URL เป็นสกุลเงินต้นทางที่ต้องการ
-
----
-
 ## ✏️ ส่วนที่ 1: เติมช่องว่างใน `src/tools/get_exchange_rate.ts`
 
 เปิดไฟล์ `src/tools/get_exchange_rate.ts` แล้วเติมช่องว่างเหล่านี้:

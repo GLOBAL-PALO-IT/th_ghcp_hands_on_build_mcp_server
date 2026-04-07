@@ -3,28 +3,12 @@
 ## 📖 เป้าหมาย
 เรียนรู้การสร้าง tool ที่มี **logic ซับซ้อนขึ้น** — รับจำนวนเงิน + สกุลเงินต้นทาง/ปลายทาง แล้วแปลงค่าให้
 
-## 🔧 ความรู้ที่ต้องใช้
-
-### Zod — ประเภท number
-```typescript
-z.number()              // ต้องเป็นตัวเลข
-z.number().positive()   // ตัวเลขที่มากกว่า 0
-z.number().positive().describe("คำอธิบาย")  // เพิ่มคำอธิบาย
-```
-
-### ExchangeRate-API — แปลงเงิน
-- URL: `https://open.er-api.com/v6/latest/USD` (ใส่สกุลเงินต้นทางแทน USD)
-- ส่งคืน: `{ "result": "success", "base_code": "USD", "time_last_update_utc": "...", "rates": { "THB": 34.5, ... } }`
-- API นี้ไม่รองรับ `amount` parameter — ต้องคำนวณเอง: `amount * rate`
-
 ### การคำนวณผลลัพธ์
 ```typescript
 const rate = data.rates["THB"]; // 34.5
 const amount = 100;
 const result = amount * rate;   // 3450.0
 ```
-
----
 
 ## ✏️ ส่วนที่ 1: เติมช่องว่างใน `src/tools/convert_currency.ts`
 

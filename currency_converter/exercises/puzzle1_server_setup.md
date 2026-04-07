@@ -1,61 +1,5 @@
 # 🧩 Puzzle 1: สร้าง Blank Server + เชื่อมต่อ VS Code
 
-## 📖 เป้าหมาย
-สร้าง MCP Server เปล่าๆ (ไม่มี tool) แล้ว**เชื่อมต่อกับ VS Code** เพื่อพิสูจน์ว่า MCP protocol ทำงานได้ก่อนที่จะเริ่มเขียน business logic
-
-## 🔧 ความรู้ที่ต้องใช้
-
-### MCP Server ประกอบด้วยอะไร?
-
-```
-┌─────────────────┐     ┌────────────────────┐
-│   McpServer     │────▶│ StdioServerTransport│────▶ stdin/stdout
-│  (tools อยู่ที่นี่) │     │  (ช่องทางสื่อสาร)    │
-└─────────────────┘     └────────────────────┘
-```
-
-1. **McpServer** — ตัว server หลัก ที่ลงทะเบียน tools ทั้งหมด
-2. **StdioServerTransport** — ช่องทางสื่อสารผ่าน stdin/stdout (เหมาะสำหรับ CLI tool)
-3. **server.connect(transport)** — เชื่อมต่อทั้งสองเข้าด้วยกัน
-
-### สร้าง McpServer
-```typescript
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-
-const server = new McpServer({
-  name: "my-server",       // ชื่อ server (kebab-case)
-  version: "1.0.0",        // เวอร์ชัน
-  description: "คำอธิบาย",  // คำอธิบาย (optional)
-});
-```
-
-### เชื่อมต่อ Transport
-```typescript
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-
-const transport = new StdioServerTransport();
-await server.connect(transport);
-```
-
-> 💡 `console.error()` ใช้แทน `console.log()` เพราะ stdout ถูกใช้สำหรับ MCP protocol แล้ว
-
-### `.vscode/mcp.json` คืออะไร?
-เป็นไฟล์ config ที่บอก VS Code ว่ามี MCP Server อะไรบ้าง และจะเชื่อมต่อยังไง
-
-```json
-{
-  "servers": {
-    "server-name": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["path/to/server.js"]
-    }
-  }
-}
-```
-
----
-
 ## ✏️ ส่วนที่ 1: เติมช่องว่างใน `src/index.ts`
 
 เปิดไฟล์ `src/index.ts` แล้วหา Puzzle 1 เติมช่องว่างเหล่านี้:
@@ -88,7 +32,7 @@ npm start
 
 ## ✏️ ส่วนที่ 3: สร้าง `.vscode/mcp.json`
 
-สร้างไฟล์ `.vscode/mcp.json` ที่ **root ของโปรเจกต์** (ระดับเดียวกับ `currency_converter/`) แล้วเติมช่องว่าง:
+สร้างไฟล์ `.vscode/mcp.json` ที่ **root ของโปรเจกต์** แล้วเติมช่องว่าง:
 
 ```json
 {
