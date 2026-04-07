@@ -97,17 +97,6 @@ app.listen(3001, () => {
 | `___BLANK_2___` | เวอร์ชัน server | `"1.0.0"` |
 | `___BLANK_3___` | คำอธิบาย server | `"MCP Server สำหรับเช็คสภาพอากาศ (HTTP Remote)"` |
 
-### สร้าง HTTP Server (Express + Streamable HTTP)
-
-| ช่องว่าง | คำอธิบาย | ตัวอย่าง |
-|----------|----------|----------|
-| `___BLANK_4___` | ฟังก์ชันสร้าง Express app | `express` |
-| `___BLANK_5___` | ฟังก์ชันสร้าง session ID | `randomUUID` |
-| `___BLANK_6___` | method สำหรับเชื่อมต่อ server กับ transport | `connect` |
-| `___BLANK_7___` | port number | `3001` |
-
----
-
 ## ✏️ ส่วนที่ 2: Build และทดสอบ
 
 ```bash
