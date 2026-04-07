@@ -1,24 +1,24 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-// ===== Puzzle 4: Tool — get_team_member =====
+// ===== Puzzle 5: Tool — get_team_member =====
 // Tool นี้ดึงข้อมูลสมาชิกทีมตามชื่อหรือ ID
 // ต้องมี input: member (ชื่อหรือ ID ของสมาชิก)
 // API ที่ใช้: http://localhost:3000/api/team/{member}
 
 export function registerGetTeamMember(server: McpServer) {
     server.registerTool(
-        "___BLANK_1___",      // ใส่ชื่อ tool เช่น "get_team_member"
+        "get_team_member",
         {
-            description: "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "ดูข้อมูลสมาชิกทีม Mango Company"
+            description: "ดูข้อมูลสมาชิกทีม Mango Company",
             inputSchema: {
                 // member คือ ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001
-                member: z.___BLANK_3___().describe("___BLANK_4___"), // ใส่ชนิดข้อมูล Zod เช่น "string" และคำอธิบาย เช่น "ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"
+                member: z.string().describe("___BLANK_1___"), // ใส่คำอธิบาย parameter เช่น "ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"
             },
         },
         async ({ member }) => {
             // สร้าง URL สำหรับเรียก API
-            const url = `http://localhost:3000/api/___BLANK_5___/${encodeURIComponent(member)}`; // ใส่ API endpoint เช่น "team"
+            const url = `http://localhost:3000/api/___BLANK_2___/${encodeURIComponent(member)}`; // ใส่ API endpoint เช่น "team"
             const response = await fetch(url);
 
             // ดึงข้อมูลสมาชิกทีมจาก response
@@ -47,7 +47,7 @@ export function registerGetTeamMember(server: McpServer) {
             // }
 
             // ดึงข้อมูล skills และ projects จาก member
-            const skillsList = data.___BLANK_6___.skills.join(", "); // ใส่ property ของ response data เช่น "member"
+            const skillsList = data.___BLANK_3___.skills.join(", "); // ใส่ property ของ response data เช่น "member"
             const projectsList = data.member.projects.join(", ");
 
             // ส่งกลับข้อความที่จะแสดงใน UI ของ client

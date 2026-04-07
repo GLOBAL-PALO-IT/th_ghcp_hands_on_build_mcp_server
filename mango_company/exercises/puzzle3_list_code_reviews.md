@@ -1,4 +1,4 @@
-# 🧩 Puzzle 2: เพิ่ม Tool — list_code_reviews
+# 🧩 Puzzle 3: เพิ่ม Tool — list_code_reviews
 
 ## 📖 เป้าหมาย
 เรียนรู้การสร้าง MCP Tool ด้วย `server.registerTool()` — Tool แรกของเรา!
@@ -52,7 +52,7 @@ server.registerTool(
 
 ## ✏️ ส่วนที่ 1: เติมช่องว่างใน `src/tools/list_code_reviews.ts`
 
-เปิดไฟล์ `src/tools/list_code_reviews.ts` แล้วเติมช่องว่างเหล่านี้:
+เปิดไฟล์ `src/tools/list_code_reviews.ts` แล้วหา Puzzle 3 เติมช่องว่างเหล่านี้:
 
 | ช่องว่าง | คำอธิบาย | ตัวอย่าง |
 |----------|----------|----------|
@@ -65,7 +65,7 @@ server.registerTool(
 
 ## ✏️ ส่วนที่ 2: ลงทะเบียน Tool ใน `src/index.ts`
 
-เปิดไฟล์ `src/index.ts` แล้ว **ลบ comment** (uncomment) 2 บรรทัดของ Puzzle 2:
+เปิดไฟล์ `src/index.ts` แล้ว **ลบ comment** (uncomment) 2 บรรทัดของ Puzzle 3:
 
 ```typescript
 // บรรทัดบน (import)

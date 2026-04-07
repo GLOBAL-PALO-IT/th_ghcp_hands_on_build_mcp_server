@@ -10,7 +10,7 @@ export function registerGetTeamMember(server: McpServer) {
                 member: z.string().describe("ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"),
             },
         },
-        async ({ member }) => {
+        async ({ member }: { member: string }) => {
             const url = `http://localhost:3000/api/team/${encodeURIComponent(member)}`;
             const response = await fetch(url);
             const data = (await response.json()) as {

@@ -1,4 +1,4 @@
-# 🧩 Puzzle 3: เพิ่ม Tool — get_project_structure
+# 🧩 Puzzle 4: เพิ่ม Tool — get_project_structure
 
 ## 📖 เป้าหมาย
 สร้าง Tool ที่**ดึงโครงสร้าง Project ตามภาษาที่ระบุ** (Java, React, หรือ Flutter)
@@ -50,18 +50,15 @@ server.registerTool(
 
 | ช่องว่าง | คำอธิบาย | ตัวอย่าง |
 |----------|----------|----------|
-| `___BLANK_1___` | ชื่อ tool | `"get_project_structure"` |
-| `___BLANK_2___` | คำอธิบาย tool | `"ดูโครงสร้าง Project ตามภาษาที่ระบุ"` |
-| `___BLANK_3___` | ชนิดข้อมูล Zod | `string` |
-| `___BLANK_4___` | คำอธิบาย parameter | `"ภาษาที่ต้องการ: Java, React, หรือ Flutter"` |
-| `___BLANK_5___` | API endpoint | `"projects"` |
-| `___BLANK_6___` | property ของ structure | `"structure"` |
+| `___BLANK_1___` | คำอธิบาย parameter | `"ภาษาที่ต้องการ: Java, React, หรือ Flutter"` |
+| `___BLANK_2___` | API endpoint | `"projects"` |
+| `___BLANK_3___` | property ของ structure | `"structure"` |
 
 ---
 
 ## ✏️ ส่วนที่ 2: ลงทะเบียน Tool ใน `src/index.ts`
 
-เปิดไฟล์ `src/index.ts` แล้ว **ลบ comment** (uncomment) 2 บรรทัดของ Puzzle 3:
+เปิดไฟล์ `src/index.ts` แล้ว **ลบ comment** (uncomment) 2 บรรทัดของ Puzzle 4:
 
 ```typescript
 // บรรทัดบน (import)
@@ -87,7 +84,7 @@ npm run build
 
 ## ✅ ตรวจสอบ
 
-- [ ] ไฟล์ `src/tools/get_project_structure.ts` เติมช่องว่างครบ 6 ช่องแล้ว
+- [ ] ไฟล์ `src/tools/get_project_structure.ts` เติมช่องว่างครบ 3 ช่องแล้ว
 - [ ] `src/index.ts` uncomment import + register แล้ว
 - [ ] `npm run build` ผ่านไม่มี error
 - [ ] ทดสอบใน VS Code แล้วเห็น tool `get_project_structure` ใน MCP server
@@ -98,9 +95,10 @@ npm run build
 ## 💡 Hints
 
 <details>
-<summary>Hint 1: ต้องใช้ Zod ชนิดใด?</summary>
+<summary>Hint 1: คำอธิบาย parameter เขียนยังไง?</summary>
 
-ต้องรับ language ที่เป็น string ดังนั้นใช้ `z.string()`
+`.describe()` คือคำอธิบายที่บอก LLM ว่า parameter นี้คืออะไร ควรเขียนสั้นๆ และให้ตัวอย่าง
+เช่น `"ภาษาที่ต้องการ: Java, React, หรือ Flutter"`
 
 </details>
 

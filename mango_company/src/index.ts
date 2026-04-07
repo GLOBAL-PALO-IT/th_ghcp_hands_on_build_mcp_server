@@ -2,9 +2,9 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-// import { registerListCodeReviews } from "./tools/list_code_reviews.js";
-// import { registerGetProjectStructure } from "./tools/get_project_structure.js";
-// import { registerGetTeamMember } from "./tools/get_team_member.js";
+// import { registerListCodeReviews } from "./tools/list_code_reviews.js";           // ← Puzzle 3: uncomment
+// import { registerGetProjectStructure } from "./tools/get_project_structure.js";   // ← Puzzle 4: uncomment
+// import { registerGetTeamMember } from "./tools/get_team_member.js";               // ← Puzzle 5: uncomment
 
 // ===== สร้าง MCP Server =====
 const server = new McpServer({
@@ -14,9 +14,9 @@ const server = new McpServer({
 });
 
 // ===== ลงทะเบียน Tools =====
-// registerListCodeReviews(server);
-// registerGetProjectStructure(server);
-// registerGetTeamMember(server);
+// registerListCodeReviews(server);      // ← Puzzle 3: uncomment
+// registerGetProjectStructure(server);  // ← Puzzle 4: uncomment
+// registerGetTeamMember(server);        // ← Puzzle 5: uncomment
 
 // ===== เชื่อมต่อ Server กับ Transport =====
 async function main() {

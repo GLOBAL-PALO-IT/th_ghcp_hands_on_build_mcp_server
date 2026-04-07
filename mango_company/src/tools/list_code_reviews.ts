@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-// ===== Puzzle 2: Tool — list_code_reviews =====
+// ===== Puzzle 3: Tool — list_code_reviews =====
 // Tool นี้แสดงรายการ Code Review ทั้งหมด
 // ไม่มี input parameter
 // API ที่ใช้: http://localhost:3000/api/code-reviews

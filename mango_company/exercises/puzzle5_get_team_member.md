@@ -1,4 +1,4 @@
-# 🧩 Puzzle 4: เพิ่ม Tool — get_team_member
+# 🧩 Puzzle 5: เพิ่ม Tool — get_team_member
 
 ## 📖 เป้าหมาย
 สร้าง Tool ที่**ดึงข้อมูลสมาชิกทีม** Mango Company ตามชื่อหรือ ID
@@ -49,18 +49,15 @@ const data = (await response.json()) as {
 
 | ช่องว่าง | คำอธิบาย | ตัวอย่าง |
 |----------|----------|----------|
-| `___BLANK_1___` | ชื่อ tool | `"get_team_member"` |
-| `___BLANK_2___` | คำอธิบาย tool | `"ดูข้อมูลสมาชิกทีม Mango Company"` |
-| `___BLANK_3___` | ชนิดข้อมูล Zod | `string` |
-| `___BLANK_4___` | คำอธิบาย parameter | `"ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"` |
-| `___BLANK_5___` | API endpoint | `"team"` |
-| `___BLANK_6___` | property ของ response data | `"member"` |
+| `___BLANK_1___` | คำอธิบาย parameter | `"ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"` |
+| `___BLANK_2___` | API endpoint | `"team"` |
+| `___BLANK_3___` | property ของ response data | `"member"` |
 
 ---
 
 ## ✏️ ส่วนที่ 2: ลงทะเบียน Tool ใน `src/index.ts`
 
-เปิดไฟล์ `src/index.ts` แล้ว **ลบ comment** (uncomment) 2 บรรทัดของ Puzzle 4:
+เปิดไฟล์ `src/index.ts` แล้ว **ลบ comment** (uncomment) 2 บรรทัดของ Puzzle 5:
 
 ```typescript
 // บรรทัดบน (import)
@@ -86,7 +83,7 @@ npm run build
 
 ## ✅ ตรวจสอบ
 
-- [ ] ไฟล์ `src/tools/get_team_member.ts` เติมช่องว่างครบ 6 ช่องแล้ว
+- [ ] ไฟล์ `src/tools/get_team_member.ts` เติมช่องว่างครบ 3 ช่องแล้ว
 - [ ] `src/index.ts` uncomment import + register แล้ว
 - [ ] `npm run build` ผ่านไม่มี error
 - [ ] ทดสอบใน VS Code แล้วเห็น tool `get_team_member` ใน MCP server
@@ -97,9 +94,10 @@ npm run build
 ## 💡 Hints
 
 <details>
-<summary>Hint 1: ต้องใช้ Zod ชนิดใด?</summary>
+<summary>Hint 1: คำอธิบาย parameter เขียนยังไง?</summary>
 
-ต้องรับ member ที่เป็น string ดังนั้นใช้ `z.string()`
+`.describe()` คือคำอธิบายที่บอก LLM ว่า parameter นี้คืออะไร ควรเขียนสั้นๆ และให้ตัวอย่าง
+เช่น `"ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"`
 
 </details>
 

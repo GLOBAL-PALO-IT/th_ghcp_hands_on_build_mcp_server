@@ -10,7 +10,7 @@ export function registerGetProjectStructure(server: McpServer) {
                 language: z.string().describe("ภาษาที่ต้องการ: Java, React, หรือ Flutter"),
             },
         },
-        async ({ language }) => {
+        async ({ language }: { language: string }) => {
             const url = `http://localhost:3000/api/projects/${encodeURIComponent(language)}`;
             const response = await fetch(url);
             const data = (await response.json()) as {

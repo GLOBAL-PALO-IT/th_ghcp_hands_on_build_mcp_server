@@ -14,13 +14,17 @@
 ```
 mango_company/
 ├── src/
-│   └── index.ts              # ไฟล์หลักที่มี puzzles ให้เติมช่องว่าง
+│   ├── index.ts              # ไฟล์หลักที่มี puzzles ให้เติมช่องว่าง
+│   └── tools/
+│       ├── list_code_reviews.ts
+│       ├── get_project_structure.ts
+│       └── get_team_member.ts
 ├── exercises/
-│   ├── puzzle1_list_code_reviews.md
-│   ├── puzzle2_get_project_structure.md
-│   ├── puzzle3_get_team_member.md
-│   ├── puzzle4_server_setup.md
-│   └── puzzle5_vscode_integration.md
+│   ├── puzzle1_server_setup.md
+│   ├── puzzle2_mock_server.md
+│   ├── puzzle3_list_code_reviews.md
+│   ├── puzzle4_get_project_structure.md
+│   └── puzzle5_get_team_member.md
 ├── solutions/
 │   └── index.ts              # เฉลยเต็มของไฟล์ src/index.ts
 ├── package.json
@@ -38,11 +42,11 @@ npm install
 ### ขั้นตอน 2: ทำ Puzzles ตามลำดับ
 อ่านไฟล์ exercises และเติมช่องว่าง `___BLANK_X___` ใน `src/index.ts`:
 
-1. **Puzzle 1**: `puzzle1_list_code_reviews.md` — สร้าง tool `list_code_reviews`
-2. **Puzzle 2**: `puzzle2_get_project_structure.md` — สร้าง tool `get_project_structure`
-3. **Puzzle 3**: `puzzle3_get_team_member.md` — สร้าง tool `get_team_member`
-4. **Puzzle 4**: `puzzle4_server_setup.md` — ตั้งค่า MCP Server
-5. **Puzzle 5**: `puzzle5_vscode_integration.md` — เชื่อมต่อ transport
+1. **Puzzle 1**: `puzzle1_server_setup.md` — ตั้งค่า MCP Server
+2. **Puzzle 2**: `puzzle2_mock_server.md` — ตั้งค่า Mock HTTP Server
+3. **Puzzle 3**: `puzzle3_list_code_reviews.md` — สร้าง tool `list_code_reviews`
+4. **Puzzle 4**: `puzzle4_get_project_structure.md` — สร้าง tool `get_project_structure`
+5. **Puzzle 5**: `puzzle5_get_team_member.md` — สร้าง tool `get_team_member`
 
 ### ขั้นตอน 3: Build & Test
 ```bash
