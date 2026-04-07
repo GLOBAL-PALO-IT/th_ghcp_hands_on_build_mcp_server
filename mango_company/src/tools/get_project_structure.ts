@@ -12,7 +12,7 @@ export function registerGetProjectStructure(server: McpServer) {
         "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "ดูโครงสร้าง Project ตามภาษาที่ระบุ"
         {
             // language คือ ภาษาที่ต้องการดูโครงสร้าง เช่น Java, React, Flutter
-            language: z.___BLANK_3___().describe("___BLANK_4___"), // ใส่ชนิดข้อมูล Zod เช่น "string" และคำอธิบาย เช่น "ภาษาที่ต้องการ: Java, React, หรือ Flutter"
+            language: z.string().describe("___BLANK_4___"), // ใส่ชนิดข้อมูล Zod เช่น "string" และคำอธิบาย เช่น "ภาษาที่ต้องการ: Java, React, หรือ Flutter"
         },
         async ({ language }) => {
             // สร้าง URL สำหรับเรียก API
