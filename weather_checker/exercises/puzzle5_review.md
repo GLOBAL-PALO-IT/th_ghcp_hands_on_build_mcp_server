@@ -68,7 +68,7 @@ weather_checker/
 - import + register ใน `src/index.ts`
 
 ### 3. Incremental Complexity
-- Tool 1: input เป็น string → เรียนรู้ `server.tool()` + Zod พื้นฐาน
+- Tool 1: input เป็น string → เรียนรู้ `server.registerTool()` + Zod พื้นฐาน
 - Tool 2: input เป็น number → เรียนรู้ Zod number schema
 - Tool 3: input หลาย parameters + มี constraints → เรียนรู้ Zod `.min()`, `.max()`
 
@@ -79,7 +79,7 @@ weather_checker/
 - **GET /sse** — SSE endpoint สำหรับ client เชื่อมต่อ
 - **POST /messages** — endpoint สำหรับ client ส่ง message
 - **server.connect()** — เชื่อมต่อ server กับ transport
-- **server.tool()** — ลงทะเบียน tool
+- **server.registerTool()** — ลงทะเบียน tool
 - **.vscode/mcp.json** — config สำหรับ VS Code (type: "sse")
 
 ---

@@ -8,16 +8,18 @@ import { z } from "zod";
 // หมายเหตุ: API นี้ไม่รองรับ amount parameter — ต้องคำนวณเอง: amount * rate
 
 export function registerConvertCurrency(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "___BLANK_1___",      // ใส่ชื่อ tool เช่น "convert_currency"
-        "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "แปลงจำนวนเงินจากสกุลเงินหนึ่งไปยังอีกสกุลเงินหนึ่ง"
         {
-            // amount คือ จำนวนเงินที่ต้องการแปลง เช่น 100
-            amount: z.number().positive().describe("___BLANK_3___"), // ใส่คำอธิบาย parameter เช่น "จำนวนเงินที่ต้องการแปลง"
-            // from คือ สกุลเงินต้นทาง เช่น USD
-            from: z.string().length(3).describe("___BLANK_4___"), // ใส่คำอธิบาย parameter เช่น "รหัสสกุลเงินต้นทาง เช่น USD"
-            // to คือ สกุลเงินปลายทาง เช่น THB
-            to: z.string().length(3).describe("___BLANK_5___"), // ใส่คำอธิบาย parameter เช่น "รหัสสกุลเงินปลายทาง เช่น THB"
+            description: "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "แปลงจำนวนเงินจากสกุลเงินหนึ่งไปยังอีกสกุลเงินหนึ่ง"
+            inputSchema: {
+                // amount คือ จำนวนเงินที่ต้องการแปลง เช่น 100
+                amount: z.number().positive().describe("___BLANK_3___"), // ใส่คำอธิบาย parameter เช่น "จำนวนเงินที่ต้องการแปลง"
+                // from คือ สกุลเงินต้นทาง เช่น USD
+                from: z.string().length(3).describe("___BLANK_4___"), // ใส่คำอธิบาย parameter เช่น "รหัสสกุลเงินต้นทาง เช่น USD"
+                // to คือ สกุลเงินปลายทาง เช่น THB
+                to: z.string().length(3).describe("___BLANK_5___"), // ใส่คำอธิบาย parameter เช่น "รหัสสกุลเงินปลายทาง เช่น THB"
+            },
         },
         async ({ amount, from, to }) => {
             // สร้าง URL สำหรับเรียก API

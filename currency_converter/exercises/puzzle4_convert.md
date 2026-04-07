@@ -99,13 +99,15 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 export function registerConvertCurrency(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "convert_currency",
-        "แปลงจำนวนเงินจากสกุลเงินหนึ่งไปยังอีกสกุลเงินหนึ่ง",
         {
-            amount: z.number().positive().describe("จำนวนเงินที่ต้องการแปลง"),
-            from: z.string().length(3).describe("รหัสสกุลเงินต้นทาง เช่น USD"),
-            to: z.string().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB"),
+            description: "แปลงจำนวนเงินจากสกุลเงินหนึ่งไปยังอีกสกุลเงินหนึ่ง",
+            inputSchema: {
+                amount: z.number().positive().describe("จำนวนเงินที่ต้องการแปลง"),
+                from: z.string().length(3).describe("รหัสสกุลเงินต้นทาง เช่น USD"),
+                to: z.string().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB"),
+            },
         },
         async ({ amount, from, to }) => {
             const url = `https://open.er-api.com/v6/latest/${encodeURIComponent(from)}`;

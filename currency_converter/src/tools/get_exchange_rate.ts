@@ -7,14 +7,16 @@ import { z } from "zod";
 // API ที่ใช้: https://open.er-api.com/v6/latest/{from}
 
 export function registerGetExchangeRate(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "___BLANK_1___",      // ใส่ชื่อ tool เช่น "get_exchange_rate"
-        "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "ดูอัตราแลกเปลี่ยนระหว่าง 2 สกุลเงิน"
         {
-            // from คือ สกุลเงินต้นทาง เช่น USD
-            from: z.string().length(3).describe("___BLANK_3___"), // ใส่คำอธิบาย parameter เช่น "สกุลเงินต้นทาง (เช่น USD)"
-            // to คือสกุลเงินปลายทาง เช่น EUR
-            to: z.string().length(3).describe("___BLANK_4___"), // ใส่คำอธิบาย parameter เช่น "สกุลเงินปลายทาง (เช่น EUR)"
+            description: "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "ดูอัตราแลกเปลี่ยนระหว่าง 2 สกุลเงิน"
+            inputSchema: {
+                // from คือ สกุลเงินต้นทาง เช่น USD
+                from: z.string().length(3).describe("___BLANK_3___"), // ใส่คำอธิบาย parameter เช่น "สกุลเงินต้นทาง (เช่น USD)"
+                // to คือสกุลเงินปลายทาง เช่น EUR
+                to: z.string().length(3).describe("___BLANK_4___"), // ใส่คำอธิบาย parameter เช่น "สกุลเงินปลายทาง (เช่น EUR)"
+            },
         },
         async ({ from, to }) => {
             // สร้าง URL สำหรับเรียก API

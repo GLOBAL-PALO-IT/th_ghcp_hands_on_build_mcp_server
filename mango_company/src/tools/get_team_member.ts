@@ -7,12 +7,14 @@ import { z } from "zod";
 // API ที่ใช้: http://localhost:3000/api/team/{member}
 
 export function registerGetTeamMember(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "___BLANK_1___",      // ใส่ชื่อ tool เช่น "get_team_member"
-        "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "ดูข้อมูลสมาชิกทีม Mango Company"
         {
-            // member คือ ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001
-            member: z.___BLANK_3___().describe("___BLANK_4___"), // ใส่ชนิดข้อมูล Zod เช่น "string" และคำอธิบาย เช่น "ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"
+            description: "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "ดูข้อมูลสมาชิกทีม Mango Company"
+            inputSchema: {
+                // member คือ ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001
+                member: z.___BLANK_3___().describe("___BLANK_4___"), // ใส่ชนิดข้อมูล Zod เช่น "string" และคำอธิบาย เช่น "ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"
+            },
         },
         async ({ member }) => {
             // สร้าง URL สำหรับเรียก API

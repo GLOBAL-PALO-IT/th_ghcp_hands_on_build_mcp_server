@@ -2,11 +2,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 export function registerGetProjectStructure(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "get_project_structure",
-        "ดูโครงสร้าง Project ตามภาษาที่ระบุ",
         {
-            language: z.string().describe("ภาษาที่ต้องการ: Java, React, หรือ Flutter"),
+            description: "ดูโครงสร้าง Project ตามภาษาที่ระบุ",
+            inputSchema: {
+                language: z.string().describe("ภาษาที่ต้องการ: Java, React, หรือ Flutter"),
+            },
         },
         async ({ language }) => {
             const url = `http://localhost:3000/api/projects/${encodeURIComponent(language)}`;

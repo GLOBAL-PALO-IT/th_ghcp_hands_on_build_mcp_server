@@ -6,10 +6,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 // API ที่ใช้: http://localhost:3000/api/code-reviews
 
 export function registerListCodeReviews(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "___BLANK_1___",                  // ใส่ชื่อ tool เช่น "list_code_reviews"
-        "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "แสดงรายการ Code Review ทั้งหมด"
-        {},                                 // ไม่มี input parameters
+        {
+            description: "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "แสดงรายการ Code Review ทั้งหมด"
+        },                                 // ไม่มี input parameters
         async () => {
             // ดึงข้อมูลจาก API เพื่อแสดงรายการ Code Review
             const response = await fetch("___BLANK_3___"); // ใส่ URL ของ API: http://localhost:3000/api/code-reviews

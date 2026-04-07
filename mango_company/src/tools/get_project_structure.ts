@@ -7,12 +7,14 @@ import { z } from "zod";
 // API ที่ใช้: http://localhost:3000/api/projects/{language}
 
 export function registerGetProjectStructure(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "___BLANK_1___",      // ใส่ชื่อ tool เช่น "get_project_structure"
-        "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "ดูโครงสร้าง Project ตามภาษาที่ระบุ"
         {
-            // language คือ ภาษาที่ต้องการดูโครงสร้าง เช่น Java, React, Flutter
-            language: z.string().describe("___BLANK_4___"), // ใส่ชนิดข้อมูล Zod เช่น "string" และคำอธิบาย เช่น "ภาษาที่ต้องการ: Java, React, หรือ Flutter"
+            description: "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "ดูโครงสร้าง Project ตามภาษาที่ระบุ"
+            inputSchema: {
+                // language คือ ภาษาที่ต้องการดูโครงสร้าง เช่น Java, React, Flutter
+                language: z.string().describe("___BLANK_4___"), // ใส่ชนิดข้อมูล Zod เช่น "string" และคำอธิบาย เช่น "ภาษาที่ต้องการ: Java, React, หรือ Flutter"
+            },
         },
         async ({ language }) => {
             // สร้าง URL สำหรับเรียก API

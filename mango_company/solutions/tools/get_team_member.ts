@@ -2,11 +2,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 export function registerGetTeamMember(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "get_team_member",
-        "ดูข้อมูลสมาชิกทีม Mango Company",
         {
-            member: z.string().describe("ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"),
+            description: "ดูข้อมูลสมาชิกทีม Mango Company",
+            inputSchema: {
+                member: z.string().describe("ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"),
+            },
         },
         async ({ member }) => {
             const url = `http://localhost:3000/api/team/${encodeURIComponent(member)}`;

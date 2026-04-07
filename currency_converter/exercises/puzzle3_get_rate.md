@@ -86,12 +86,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 export function registerGetExchangeRate(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "get_exchange_rate",
-        "ดูอัตราแลกเปลี่ยนระหว่าง 2 สกุลเงิน",
         {
-            from: z.string().length(3).describe("สกุลเงินต้นทาง (เช่น USD)"),
-            to: z.string().length(3).describe("สกุลเงินปลายทาง (เช่น EUR)"),
+            description: "ดูอัตราแลกเปลี่ยนระหว่าง 2 สกุลเงิน",
+            inputSchema: {
+                from: z.string().length(3).describe("สกุลเงินต้นทาง (เช่น USD)"),
+                to: z.string().length(3).describe("สกุลเงินปลายทาง (เช่น EUR)"),
+            },
         },
         async ({ from, to }) => {
             const url = `https://open.er-api.com/v6/latest/${encodeURIComponent(from)}`;

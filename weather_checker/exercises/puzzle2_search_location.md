@@ -1,20 +1,22 @@
 # 🧩 Puzzle 2: เพิ่ม Tool — search_location
 
 ## 📖 เป้าหมาย
-เรียนรู้การสร้าง MCP Tool ด้วย `server.tool()` — Tool แรกของเรา!
+เรียนรู้การสร้าง MCP Tool ด้วย `server.registerTool()` — Tool แรกของเรา!
 Tool นี้จะ**ค้นหาตำแหน่งเมือง**เพื่อรับพิกัด latitude/longitude จาก Open-Meteo Geocoding API
 
 ## 🔧 ความรู้ที่ต้องใช้
 
-### `server.tool()` คืออะไร?
-เป็น method สำหรับลงทะเบียน tool ใน MCP Server โดยรับ 4 parameters:
+### `server.registerTool()` คืออะไร?
+เป็น method สำหรับลงทะเบียน tool ใน MCP Server โดยรับ 3 parameters:
 
 ```typescript
-server.tool(
-  "tool_name",        // 1. ชื่อ tool (string)
-  "tool description", // 2. คำอธิบาย tool (string)
-  { /* schema */ },   // 3. Input schema (Zod object หรือ {} ถ้าไม่มี input)
-  async (input) => {  // 4. Handler function (async)
+server.registerTool(
+  "tool_name",           // 1. ชื่อ tool (string)
+  {
+    description: "tool description",  // 2. คำอธิบาย tool
+    inputSchema: { /* schema */ },    // 3. Input schema (Zod object, optional)
+  },
+  async (input) => {     // 4. Handler function (async)
     // ... logic ...
     return {
       content: [{ type: "text", text: "ผลลัพธ์" }]
@@ -31,7 +33,7 @@ server.tool(
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 export function registerMyTool(server: McpServer) {
-  server.tool("my_tool", "คำอธิบาย", {}, async () => {
+  server.registerTool("my_tool", { description: "คำอธิบาย" }, async () => {
     return { content: [{ type: "text", text: "ผลลัพธ์" }] };
   });
 }
@@ -139,11 +141,13 @@ https://geocoding-api.open-meteo.com/v1/search?name=...
 **src/tools/search_location.md:**
 ```typescript
 export function registerSearchLocation(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "search_location",
-        "ค้นหาตำแหน่งเมืองเพื่อรับพิกัด latitude/longitude",
         {
-            query: z.string().describe("ชื่อเมืองที่ต้องการค้นหา เช่น Bangkok"),
+            description: "ค้นหาตำแหน่งเมืองเพื่อรับพิกัด latitude/longitude",
+            inputSchema: {
+                query: z.string().describe("ชื่อเมืองที่ต้องการค้นหา เช่น Bangkok"),
+            },
         },
         async ({ query }) => {
             const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=th`;

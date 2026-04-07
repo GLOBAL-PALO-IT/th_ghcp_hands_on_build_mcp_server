@@ -10,12 +10,14 @@ Tool นี้ต้องรับ input parameter ชื่อ `language`
 เมื่อ Tool ต้องรับ input จะใช้ Zod schema เช่น:
 
 ```typescript
-server.tool(
+server.registerTool(
   "tool_name",
-  "tool description",
   {
-    param1: z.string().describe("คำอธิบาย param1"),
-    param2: z.number().describe("คำอธิบาย param2"),
+    description: "tool description",
+    inputSchema: {
+      param1: z.string().describe("คำอธิบาย param1"),
+      param2: z.number().describe("คำอธิบาย param2"),
+    },
   },
   async ({ param1, param2 }) => {
     // ใช้ param1 และ param2 ที่รับมา
@@ -121,11 +123,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 export function registerGetProjectStructure(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "get_project_structure",
-        "ดูโครงสร้าง Project ตามภาษาที่ระบุ",
         {
-            language: z.string().describe("ภาษาที่ต้องการ: Java, React, หรือ Flutter"),
+            description: "ดูโครงสร้าง Project ตามภาษาที่ระบุ",
+            inputSchema: {
+                language: z.string().describe("ภาษาที่ต้องการ: Java, React, หรือ Flutter"),
+            },
         },
         async ({ language }) => {
             const url = `http://localhost:3000/api/projects/${encodeURIComponent(language)}`;

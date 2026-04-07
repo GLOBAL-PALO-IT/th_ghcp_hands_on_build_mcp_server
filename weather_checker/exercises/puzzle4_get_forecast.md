@@ -111,13 +111,15 @@ npm run build
 **src/tools/get_forecast.md:**
 ```typescript
 export function registerGetForecast(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "get_forecast",
-        "ดูพยากรณ์อากาศล่วงหน้าหลายวัน",
         {
-            latitude: z.number().describe("ละติจูด เช่น 13.75"),
-            longitude: z.number().describe("ลองจิจูด เช่น 100.5"),
-            days: z.number().min(1).max(16).describe("จำนวนวันที่ต้องการพยากรณ์ (1-16)"),
+            description: "ดูพยากรณ์อากาศล่วงหน้าหลายวัน",
+            inputSchema: {
+                latitude: z.number().describe("ละติจูด เช่น 13.75"),
+                longitude: z.number().describe("ลองจิจูด เช่น 100.5"),
+                days: z.number().min(1).max(16).describe("จำนวนวันที่ต้องการพยากรณ์ (1-16)"),
+            },
         },
         async ({ latitude, longitude, days }) => {
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=${days}`;

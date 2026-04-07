@@ -2,11 +2,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 export function registerSearchLocation(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "search_location",
-        "ค้นหาตำแหน่งเมืองเพื่อรับพิกัด latitude/longitude",
         {
-            query: z.string().describe("ชื่อเมืองที่ต้องการค้นหา เช่น Bangkok"),
+            description: "ค้นหาตำแหน่งเมืองเพื่อรับพิกัด latitude/longitude",
+            inputSchema: {
+                query: z.string().describe("ชื่อเมืองที่ต้องการค้นหา เช่น Bangkok"),
+            },
         },
         async ({ query }) => {
             const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=th`;

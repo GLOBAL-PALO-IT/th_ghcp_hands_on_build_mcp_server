@@ -1,20 +1,22 @@
 # 🧩 Puzzle 2: เพิ่ม Tool — list_currencies
 
 ## 📖 เป้าหมาย
-เรียนรู้การสร้าง MCP Tool ด้วย `server.tool()` — Tool แรกของเรา!
+เรียนรู้การสร้าง MCP Tool ด้วย `server.registerTool()` — Tool แรกของเรา!
 Tool นี้จะ**แสดงรายการสกุลเงินทั้งหมด**ที่ API รองรับ (ไม่ต้องรับ input ใดๆ)
 
 ## 🔧 ความรู้ที่ต้องใช้
 
-### `server.tool()` คืออะไร?
-เป็น method สำหรับลงทะเบียน tool ใน MCP Server โดยรับ 4 parameters:
+### `server.registerTool()` คืออะไร?
+เป็น method สำหรับลงทะเบียน tool ใน MCP Server โดยรับ 3 parameters:
 
 ```typescript
-server.tool(
-  "tool_name",        // 1. ชื่อ tool (string snake_case)
-  "tool description", // 2. คำอธิบาย tool (string)
-  { /* schema */ },   // 3. input parameters
-  async (input) => {  // 4. Handler function (async)
+server.registerTool(
+  "tool_name",           // 1. ชื่อ tool (string snake_case)
+  {
+    description: "tool description",  // 2. คำอธิบาย tool
+    inputSchema: { /* schema */ },    // 3. input parameters (optional)
+  },
+  async (input) => {     // 4. Handler function (async)
     // ... logic ...
     return {
       content: [{ type: "text", text: "ผลลัพธ์" }]
@@ -102,10 +104,9 @@ https://open.er-api.com/v6/latest/USD
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 export function registerListCurrencies(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "list_currencies",
-        "แสดงรายการสกุลเงินทั้งหมดที่รองรับ",
-        {},
+        { description: "แสดงรายการสกุลเงินทั้งหมดที่รองรับ" },
         async () => {
             const response = await fetch("https://open.er-api.com/v6/latest/USD");
             const data = (await response.json()) as {

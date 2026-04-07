@@ -6,10 +6,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 // API ที่ใช้: https://open.er-api.com/v6/latest/USD (ดึง key จาก rates มาแสดง)
 
 export function registerListCurrencies(server: McpServer) {
-    server.tool(
+    server.registerTool(
         "___BLANK_1___",                  // ใส่ชื่อ tool เช่น "list_currencies"
-        "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "แสดงรายการสกุลเงินทั้งหมดที่รองรับ"
-        {},                                 // ไม่มี input parameters
+        {
+            description: "___BLANK_2___",      // ใส่คำอธิบาย tool เช่น "แสดงรายการสกุลเงินทั้งหมดที่รองรับ"
+        },                                 // ไม่มี input parameters
         async () => {
             // ดึงข้อมูลจาก API เพื่อแสดงรายการสกุลเงิน
             const response = await fetch("___BLANK_3___"); // ใส่ URL ของ API: https://open.er-api.com/v6/latest/USD
