@@ -8,21 +8,21 @@
 ### MCP Server แบบ HTTP Remote ประกอบด้วยอะไร?
 
 ```
-┌─────────────────┐     ┌────────────────────┐     ┌──────────┐
-│   McpServer     │────▶│ SSEServerTransport  │────▶│ Express  │──▶ HTTP
-│  (tools อยู่ที่นี่) │     │  (ช่องทางสื่อสาร)    │     │  Server   │
-└─────────────────┘     └────────────────────┘     └──────────┘
+┌─────────────────┐     ┌─────────────────────────────────┐     ┌──────────┐
+│   McpServer     │────▶│ StreamableHTTPServerTransport    │────▶│ Express  │──▶ HTTP
+│  (tools อยู่ที่นี่) │     │  (ช่องทางสื่อสาร)                │     │  Server   │
+└─────────────────┘     └─────────────────────────────────┘     └──────────┘
 ```
 
 1. **McpServer** — ตัว server หลัก ที่ลงทะเบียน tools ทั้งหมด
-2. **SSEServerTransport** — ช่องทางสื่อสารผ่าน Server-Sent Events (เหมาะสำหรับ HTTP Remote)
-3. **Express.js** — HTTP server ที่รองรับ SSE endpoint
+2. **StreamableHTTPServerTransport** — ช่องทางสื่อสารผ่าน Streamable HTTP (แทนที่ SSE ที่ถูก deprecated)
+3. **Express.js** — HTTP server ที่รองรับ MCP endpoint
 4. **server.connect(transport)** — เชื่อมต่อทั้งสองเข้าด้วยกัน
 
-### ความแตกต่าง: Stdio vs HTTP Remote (SSE)
+### ความแตกต่าง: Stdio vs HTTP Remote (Streamable HTTP)
 
-| Feature | Stdio | HTTP Remote (SSE) |
-|---------|-------|-------------------|
+| Feature | Stdio | HTTP Remote (Streamable HTTP) |
+|---------|-------|-------------------------------|
 | การ deploy | ต้องติดตั้ง local | deploy เป็น web service ได้ |
 | การเข้าถึง | เฉพาะเครื่องที่ติดตั้ง | เข้าถึงผ่าน URL จากที่ไหนก็ได้ |
 | หลาย client | 1 client ต่อ 1 process | หลาย client พร้อมกัน |
@@ -39,35 +39,33 @@ const server = new McpServer({
 });
 ```
 
-### เชื่อมต่อ HTTP Transport (SSE) ด้วย Express
+### เชื่อมต่อ HTTP Transport (Streamable HTTP) ด้วย Express
 
 ```typescript
 import express from "express";
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { randomUUID } from "node:crypto";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 
 const app = express();
-const transports: Record<string, SSEServerTransport> = {};
 
-// GET /sse — client เชื่อมต่อ SSE ที่นี่
-app.get("/sse", async (_req, res) => {
-  const transport = new SSEServerTransport("/messages", res);
-  transports[transport.sessionId] = transport;
-  res.on("close", () => { delete transports[transport.sessionId]; });
-  await server.connect(transport);
+// สร้าง transport instance (รองรับหลาย session อัตโนมัติ)
+const transport = new StreamableHTTPServerTransport({
+  sessionIdGenerator: () => randomUUID(),
 });
 
-// POST /messages — client ส่ง message มาที่นี่
-app.post("/messages", async (req, res) => {
-  const sessionId = req.query.sessionId as string;
-  const transport = transports[sessionId];
-  if (!transport) { res.status(400).json({ error: "Invalid session ID" }); return; }
-  await transport.handlePostMessage(req, res);
+await server.connect(transport);
+
+// MCP endpoint — client สื่อสารผ่าน endpoint เดียว (รองรับ GET, POST, DELETE)
+app.all("/mcp", async (req, res) => {
+  await transport.handleRequest(req, res);
 });
 
 app.listen(3001, () => {
   console.log("Server running on http://localhost:3001");
 });
 ```
+
+> 💡 ต่างจาก SSE (deprecated) ที่ต้องแยก 2 endpoint — Streamable HTTP ใช้ endpoint เดียว `/mcp` รองรับทั้ง GET, POST, DELETE
 
 > 💡 ต่างจาก Stdio ที่ใช้ `console.error()` — HTTP Remote ใช้ `console.log()` ได้ปกติเพราะไม่ได้ใช้ stdout เป็น protocol
 
@@ -78,8 +76,8 @@ app.listen(3001, () => {
 {
   "servers": {
     "server-name": {
-      "type": "sse",
-      "url": "http://localhost:3001/sse"
+      "type": "http",
+      "url": "http://localhost:3001/mcp"
     }
   }
 }
@@ -99,12 +97,12 @@ app.listen(3001, () => {
 | `___BLANK_2___` | เวอร์ชัน server | `"1.0.0"` |
 | `___BLANK_3___` | คำอธิบาย server | `"MCP Server สำหรับเช็คสภาพอากาศ (HTTP Remote)"` |
 
-### สร้าง HTTP Server (Express + SSE)
+### สร้าง HTTP Server (Express + Streamable HTTP)
 
 | ช่องว่าง | คำอธิบาย | ตัวอย่าง |
 |----------|----------|----------|
 | `___BLANK_4___` | ฟังก์ชันสร้าง Express app | `express` |
-| `___BLANK_5___` | path สำหรับรับ message | `messages` |
+| `___BLANK_5___` | ฟังก์ชันสร้าง session ID | `randomUUID` |
 | `___BLANK_6___` | method สำหรับเชื่อมต่อ server กับ transport | `connect` |
 | `___BLANK_7___` | port number | `3001` |
 
@@ -145,8 +143,8 @@ npm start
 
 | ช่องว่าง | คำอธิบาย | ตัวอย่าง |
 |----------|----------|----------|
-| `___BLANK_8___` | ประเภทการเชื่อมต่อ | `"sse"` |
-| `___BLANK_9___` | URL ของ SSE endpoint | `"http://localhost:3001/sse"` |
+| `___BLANK_8___` | ประเภทการเชื่อมต่อ | `"http"` |
+| `___BLANK_9___` | URL ของ MCP endpoint | `"http://localhost:3001/mcp"` |
 
 ---
 
@@ -178,7 +176,7 @@ name: "weather-checker"
 <details>
 <summary>Hint 2: Transport เลือกอะไร?</summary>
 
-สำหรับ HTTP Remote Server ใช้ `SSEServerTransport` (สื่อสารผ่าน Server-Sent Events)
+สำหรับ HTTP Remote Server ใช้ `StreamableHTTPServerTransport` (สื่อสารผ่าน Streamable HTTP)
 
 </details>
 
@@ -196,26 +194,21 @@ const server = new McpServer({
 // ...
 
 const app = express();
-const transports: Record<string, SSEServerTransport> = {};
 
-app.get("/sse", async (_req, res) => {
-  const transport = new SSEServerTransport("/messages", res);
-  transports[transport.sessionId] = transport;
-  res.on("close", () => { delete transports[transport.sessionId]; });
-  await server.connect(transport);
+const transport = new StreamableHTTPServerTransport({
+  sessionIdGenerator: () => randomUUID(),
 });
 
-app.post("/messages", async (req, res) => {
-  const sessionId = req.query.sessionId as string;
-  const transport = transports[sessionId];
-  if (!transport) { res.status(400).json({ error: "Invalid session ID" }); return; }
-  await transport.handlePostMessage(req, res);
+await server.connect(transport);
+
+app.all("/mcp", async (req, res) => {
+  await transport.handleRequest(req, res);
 });
 
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Weather Checker MCP Server is running on http://localhost:${PORT}`);
-  console.log(`SSE endpoint: http://localhost:${PORT}/sse`);
+  console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
 });
 ```
 

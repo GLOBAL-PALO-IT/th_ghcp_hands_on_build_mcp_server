@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import express from "express";
+import { randomUUID } from "node:crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 // import { registerSearchLocation } from "./tools/search_location.js";       // ← Puzzle 2: uncomment
 // import { registerGetCurrentWeather } from "./tools/get_current_weather.js"; // ← Puzzle 3: uncomment
 // import { registerGetForecast } from "./tools/get_forecast.js";             // ← Puzzle 4: uncomment
@@ -19,40 +20,26 @@ const server = new McpServer({
 // registerGetCurrentWeather(server);   // ← Puzzle 3: uncomment
 // registerGetForecast(server);         // ← Puzzle 4: uncomment
 
-// ===== Puzzle 1: เชื่อมต่อ Server กับ HTTP Transport (SSE) =====
-const app = ___BLANK_4___();  // ใส่ฟังก์ชันสร้าง Express app เช่น express
+// ===== Puzzle 1: เชื่อมต่อ Server กับ HTTP Transport (Streamable HTTP) =====
+const app = express();
 
-// เก็บ transport instances สำหรับแต่ละ session
-const transports: Record<string, SSEServerTransport> = {};
-
-// SSE endpoint — client เชื่อมต่อที่นี่
-app.get("/sse", async (_req: express.Request, res: express.Response) => {
-    const transport = new SSEServerTransport("/___BLANK_5___", res);  // ใส่ path สำหรับรับ message เช่น "messages"
-    transports[transport.sessionId] = transport;
-
-    res.on("close", () => {
-        delete transports[transport.sessionId];
-    });
-
-    await server.___BLANK_6___(transport);  // ใส่ method เชื่อมต่อ server กับ transport เช่น "connect"
+// สร้าง transport instance (รองรับหลาย session อัตโนมัติ)
+// sessionIdGenerator: ฟังก์ชันที่ใช้สร้าง session ID สำหรับแต่ละ client connection
+const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: () => randomUUID(),
 });
 
-// Message endpoint — client ส่ง message มาที่นี่
-app.post("/messages", async (req: express.Request, res: express.Response) => {
-    const sessionId = req.query.sessionId as string;
-    const transport = transports[sessionId];
+// เชื่อมต่อ server กับ transport
+await server.connect(transport);
 
-    if (!transport) {
-        res.status(400).json({ error: "Invalid session ID" });
-        return;
-    }
-
-    await transport.handlePostMessage(req, res);
+// MCP endpoint — client สื่อสารผ่าน endpoint เดียว (รองรับ GET, POST, DELETE)
+app.all("/mcp", async (req: express.Request, res: express.Response) => {
+    await transport.handleRequest(req, res);
 });
 
 // เริ่ม HTTP Server
-const PORT = ___BLANK_7___;  // ใส่ port number เช่น 3001
+const PORT = "___BLANK_7___";  // ใส่ port number เช่น 3001
 app.listen(PORT, () => {
     console.log(`Weather Checker MCP Server is running on http://localhost:${PORT}`);
-    console.log(`SSE endpoint: http://localhost:${PORT}/sse`);
+    console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
 });

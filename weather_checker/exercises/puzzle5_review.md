@@ -37,9 +37,9 @@ weather_checker/
        ↓
 3. สร้าง Express.js HTTP Server
        ↓
-4. เชื่อมต่อ SSEServerTransport (GET /sse + POST /messages)
+4. เชื่อมต่อ StreamableHTTPServerTransport (endpoint เดียว /mcp)
        ↓
-5. VS Code เชื่อมต่อผ่าน .vscode/mcp.json (type: "sse")
+5. VS Code เชื่อมต่อผ่าน .vscode/mcp.json (type: "http")
        ↓
 6. Copilot Chat เรียกใช้ tools ได้!
 ```
@@ -74,13 +74,13 @@ weather_checker/
 
 ### 4. HTTP Remote MCP Components
 - **McpServer** — ตัว server หลัก
-- **SSEServerTransport** — ช่องทางสื่อสาร (Server-Sent Events)
+- **StreamableHTTPServerTransport** — ช่องทางสื่อสาร (Streamable HTTP)
 - **Express.js** — HTTP server
 - **GET /sse** — SSE endpoint สำหรับ client เชื่อมต่อ
 - **POST /messages** — endpoint สำหรับ client ส่ง message
 - **server.connect()** — เชื่อมต่อ server กับ transport
 - **server.registerTool()** — ลงทะเบียน tool
-- **.vscode/mcp.json** — config สำหรับ VS Code (type: "sse")
+- **.vscode/mcp.json** — config สำหรับ VS Code (type: "http")
 
 ---
 
@@ -88,9 +88,9 @@ weather_checker/
 
 | | Currency Converter (Stdio) | Weather Checker (HTTP Remote) |
 |---|---|---|
-| Transport | `StdioServerTransport` | `SSEServerTransport` + Express |
-| การสื่อสาร | stdin/stdout | HTTP (GET /sse + POST /messages) |
-| mcp.json type | `"stdio"` | `"sse"` |
+| Transport | `StdioServerTransport` | `StreamableHTTPServerTransport` + Express |
+| การสื่อสาร | stdin/stdout | HTTP (endpoint เดียว /mcp) |
+| mcp.json type | `"stdio"` | `"http"` |
 | mcp.json config | `command` + `args` | `url` |
 | การรัน | VS Code รันให้อัตโนมัติ | ต้องรัน server เองก่อน |
 | เข้าถึง | เฉพาะเครื่องนี้ | จากที่ไหนก็ได้ (ถ้า deploy) |
@@ -113,6 +113,6 @@ weather_checker/
 - [ ] MCP Server เชื่อมต่อ VS Code ได้
 - [ ] มี 3 tools ปรากฏใน MCP server
 - [ ] ทุก tool ทำงานได้ถูกต้องเมื่อถามผ่าน Copilot Chat
-- [ ] เข้าใจ flow: Server → Transport (SSE) → Tools → VS Code
+- [ ] เข้าใจ flow: Server → Transport (Streamable HTTP) → Tools → VS Code
 
 > 🎉 ยินดีด้วย! คุณสร้าง HTTP Remote MCP Server สำเร็จแล้ว!
