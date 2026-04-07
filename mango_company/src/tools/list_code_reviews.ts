@@ -49,6 +49,11 @@ export function registerListCodeReviews(server: McpServer) {
                     {
                         type: "text" as const,
                         text: `___BLANK_4___${reviewList}`, // ใส่ข้อความนำหน้า เช่น "Code Review ทั้งหมด:\n"
+                        // ตัวอย่างข้อความที่ส่งกลับจะมีรูปแบบประมาณนี้:
+                        // Code Review ทั้งหมด:
+                        // - Review Authentication System (by Alice on 2024-03-01)
+                        // - Review Payment Gateway (by Bob on 2024-03-05)
+                        // - Review Frontend UI (by Carol on 2024-03-10)
                     },
                 ],
             };
