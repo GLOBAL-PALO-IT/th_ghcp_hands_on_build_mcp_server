@@ -6,10 +6,12 @@
 
 | ช่องว่าง | คำอธิบาย | คำตอบ |
 |----------|----------|-------|
-| `___BLANK_1___` | ชนิดข้อมูล Zod สำหรับ `from` | `string` |
-| `___BLANK_2___` | ชนิดข้อมูล Zod สำหรับ `to` | `string` |
-| `___BLANK_3___` | API endpoint | `latest` |
-| `___BLANK_4___` | ชื่อ property ที่เก็บอัตราแลกเปลี่ยน | `rates` |
+| `___BLANK_1___` | ชื่อ tool | `get_exchange_rate` |
+| `___BLANK_2___` | คำอธิบาย tool | `ดูอัตราแลกเปลี่ยนระหว่าง 2 สกุลเงิน` |
+| `___BLANK_3___` | คำอธิบาย parameter `from` | `สกุลเงินต้นทาง (เช่น USD)` |
+| `___BLANK_4___` | คำอธิบาย parameter `to` | `สกุลเงินปลายทาง (เช่น EUR)` |
+| `___BLANK_5___` | ข้อความเมื่อไม่พบอัตราแลกเปลี่ยน | `ไม่พบอัตราแลกเปลี่ยนสำหรับ` |
+| `___BLANK_6___` | ข้อความนำหน้าผลลัพธ์ | `อัตราแลกเปลี่ยน` |
 
 ---
 
@@ -41,7 +43,7 @@ npm run build
 
 ## ✅ ตรวจสอบ
 
-- [ ] ไฟล์ `src/tools/get_exchange_rate.ts` เติมช่องว่างครบแล้ว
+- [ ] ไฟล์ `src/tools/get_exchange_rate.ts` เติมช่องว่างครบ 6 ช่องแล้ว
 - [ ] `src/index.ts` uncomment import + register แล้ว
 - [ ] `npm run build` ผ่านไม่มี error
 - [ ] ทดสอบใน VS Code แล้วเห็น tool `get_exchange_rate` ใน MCP server
@@ -52,23 +54,31 @@ npm run build
 ## 💡 Hints
 
 <details>
-<summary>Hint 1: ชนิดข้อมูล Zod เขียนยังไง?</summary>
+<summary>Hint 1: ชื่อ tool ตั้งยังไง?</summary>
 
-สกุลเงินเป็นตัวอักษร — ชนิดข้อมูลคือ `string`
-โค้ดที่เหลือ `.length(3).describe(...)` เขียนให้แล้ว!
-
-</details>
-
-<details>
-<summary>Hint 2: API endpoint คืออะไร?</summary>
-
-URL เต็มคือ `https://open.er-api.com/v6/latest/{from}`
-ส่วน `https://open.er-api.com/v6/` เขียนให้แล้ว — เติมแค่ `latest`
+ชื่อ tool ควรสื่อความหมาย เช่น `get_exchange_rate`
+ใช้ snake_case ตามมาตรฐาน MCP
 
 </details>
 
 <details>
-<summary>Hint 3: ดูเฉลยเต็ม</summary>
+<summary>Hint 2: คำอธิบาย parameter เขียนยังไง?</summary>
+
+ให้บอกว่า parameter นี้คืออะไร พร้อมตัวอย่าง เช่น `"สกุลเงินต้นทาง (เช่น USD)"`
+โค้ดส่วน `z.string().length(3).describe(...)` เขียนให้แล้ว — เติมแค่ข้อความในช่อง describe!
+
+</details>
+
+<details>
+<summary>Hint 3: ข้อความตอบกลับเขียนยังไง?</summary>
+
+- เมื่อไม่พบอัตราแลกเปลี่ยน: `"ไม่พบอัตราแลกเปลี่ยนสำหรับ EUR"`
+- เมื่อสำเร็จ: `"อัตราแลกเปลี่ยน: 1 USD = 0.85 EUR (อัปเดตล่าสุด: ...)"`
+
+</details>
+
+<details>
+<summary>Hint 4: ดูเฉลยเต็ม</summary>
 
 **src/tools/get_exchange_rate.ts:**
 ```typescript
@@ -78,10 +88,10 @@ import { z } from "zod";
 export function registerGetExchangeRate(server: McpServer) {
     server.tool(
         "get_exchange_rate",
-        "ดูอัตราแลกเปลี่ยนระหว่างสกุลเงิน",
+        "ดูอัตราแลกเปลี่ยนระหว่าง 2 สกุลเงิน",
         {
-            from: z.string().length(3).describe("รหัสสกุลเงินต้นทาง เช่น USD"),
-            to: z.string().length(3).describe("รหัสสกุลเงินปลายทาง เช่น THB"),
+            from: z.string().length(3).describe("สกุลเงินต้นทาง (เช่น USD)"),
+            to: z.string().length(3).describe("สกุลเงินปลายทาง (เช่น EUR)"),
         },
         async ({ from, to }) => {
             const url = `https://open.er-api.com/v6/latest/${encodeURIComponent(from)}`;
@@ -92,6 +102,17 @@ export function registerGetExchangeRate(server: McpServer) {
                 time_last_update_utc: string;
                 rates: Record<string, number>;
             };
+
+            if (!data.rates[to.toUpperCase()]) {
+                return {
+                    content: [
+                        {
+                            type: "text" as const,
+                            text: `ไม่พบอัตราแลกเปลี่ยนสำหรับ ${to.toUpperCase()}`,
+                        },
+                    ],
+                };
+            }
 
             const rate = data.rates[to.toUpperCase()];
 

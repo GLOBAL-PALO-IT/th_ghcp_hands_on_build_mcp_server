@@ -1,7 +1,7 @@
 # 🧩 Puzzle 4: เพิ่ม Tool — convert_currency
 
 ## 📖 เป้าหมาย
-เรียนรู้การสร้าง tool ที่มี **logic ซับซ้อนขึ้น** — รับจำนวนเงิน + สกุลเงินต้นทาง/ปลายทาง แล้วแปลงค่าให้
+เรียนรู้การสร้าง tool ที่มี **logic ซับซ้อนขึ้น** - รับจำนวนเงิน + สกุลเงินต้นทาง/ปลายทาง แล้วแปลงค่าให้
 
 ### การคำนวณผลลัพธ์
 ```typescript
@@ -16,8 +16,12 @@ const result = amount * rate;   // 3450.0
 
 | ช่องว่าง | คำอธิบาย | คำตอบ |
 |----------|----------|-------|
-| `___BLANK_1___` | ชนิดข้อมูล Zod สำหรับ `amount` | `number` |
-| `___BLANK_2___` | ตัวแปรที่เก็บจำนวนเงิน (ใช้คูณกับ rate) | `amount` |
+| `___BLANK_1___` | ชื่อ tool | `convert_currency` |
+| `___BLANK_2___` | คำอธิบาย tool | `แปลงจำนวนเงินจากสกุลเงินหนึ่งไปยังอีกสกุลเงินหนึ่ง` |
+| `___BLANK_3___` | คำอธิบาย parameter `amount` | `จำนวนเงินที่ต้องการแปลง` |
+| `___BLANK_4___` | คำอธิบาย parameter `from` | `รหัสสกุลเงินต้นทาง เช่น USD` |
+| `___BLANK_5___` | คำอธิบาย parameter `to` | `รหัสสกุลเงินปลายทาง เช่น THB` |
+| `___BLANK_6___` | ข้อความเมื่อไม่พบอัตราแลกเปลี่ยน | `ไม่พบอัตราแลกเปลี่ยนสำหรับ` |
 
 ---
 
@@ -49,7 +53,7 @@ npm run build
 
 ## ✅ ตรวจสอบ
 
-- [ ] ไฟล์ `src/tools/convert_currency.ts` เติมช่องว่างครบแล้ว
+- [ ] ไฟล์ `src/tools/convert_currency.ts` เติมช่องว่างครบ 6 ช่องแล้ว
 - [ ] `src/index.ts` uncomment import + register แล้ว
 - [ ] `npm run build` ผ่านไม่มี error
 - [ ] ทดสอบใน VS Code แล้วเห็น tool `convert_currency` ใน MCP server
@@ -60,7 +64,15 @@ npm run build
 ## 💡 Hints
 
 <details>
-<summary>Hint 1: ชนิดข้อมูล Zod สำหรับจำนวนเงิน</summary>
+<summary>Hint 1: ชื่อ tool ตั้งยังไง?</summary>
+
+ชื่อ tool ควรสื่อความหมาย เช่น `convert_currency`
+ใช้ snake_case ตามมาตรฐาน MCP
+
+</details>
+
+<details>
+<summary>Hint 2: ชนิดข้อมูล Zod สำหรับจำนวนเงิน</summary>
 
 จำนวนเงินเป็นตัวเลข — ชนิดข้อมูลคือ `number`
 โค้ดที่เหลือ `.positive().describe(...)` เขียนให้แล้ว!
@@ -68,7 +80,7 @@ npm run build
 </details>
 
 <details>
-<summary>Hint 2: คำนวณผลลัพธ์ยังไง?</summary>
+<summary>Hint 3: คำนวณผลลัพธ์ยังไง?</summary>
 
 API ไม่คำนวณ amount ให้ — ต้องเอา amount คูณกับ rate เอง:
 ```typescript
@@ -79,7 +91,7 @@ const result = amount * rate;
 </details>
 
 <details>
-<summary>Hint 3: ดูเฉลยเต็ม</summary>
+<summary>Hint 4: ดูเฉลยเต็ม</summary>
 
 **src/tools/convert_currency.ts:**
 ```typescript
@@ -104,6 +116,17 @@ export function registerConvertCurrency(server: McpServer) {
                 time_last_update_utc: string;
                 rates: Record<string, number>;
             };
+
+            if (!data.rates[to.toUpperCase()]) {
+                return {
+                    content: [
+                        {
+                            type: "text" as const,
+                            text: `ไม่พบอัตราแลกเปลี่ยนสำหรับ ${to.toUpperCase()}`,
+                        },
+                    ],
+                };
+            }
 
             const rate = data.rates[to.toUpperCase()];
             const result = amount * rate;

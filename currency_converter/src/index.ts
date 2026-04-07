@@ -2,7 +2,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { registerListCurrencies } from "./tools/list_currencies.js";
+// import { registerListCurrencies } from "./tools/list_currencies.js";
 // import { registerGetExchangeRate } from "./tools/get_exchange_rate.js";
 // import { registerConvertCurrency } from "./tools/convert_currency.js";
 
@@ -14,7 +14,7 @@ const server = new McpServer({
 });
 
 // ===== ลงทะเบียน Tools =====
-registerListCurrencies(server);
+// registerListCurrencies(server);
 // registerGetExchangeRate(server);
 // registerConvertCurrency(server);
 
@@ -22,6 +22,10 @@ registerListCurrencies(server);
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
+
+    // เมื่อ server พร้อมทำงานแล้ว ให้แสดงข้อความนี้ใน console.log เพื่อให้ผู้ใช้รู้ว่า server พร้อมแล้ว
+    // คุณจะเติมข้อความอะไรลงในช่อง ___BLANK_4___ เพื่อบอกผู้ใช้ว่า server พร้อมแล้ว? 
+    // เช่น "Currency Converter MCP Server is ready!"
     console.log("___BLANK_4___");
 }
 
