@@ -11,6 +11,7 @@
 | `___BLANK_1___` | ชื่อ server | `"weather-checker"` |
 | `___BLANK_2___` | เวอร์ชัน server | `"1.0.0"` |
 | `___BLANK_3___` | คำอธิบาย server | `"MCP Server สำหรับเช็คสภาพอากาศ (HTTP Remote)"` |
+| `___BLANK_4___` | server port | `3001` |
 
 ## ✏️ ส่วนที่ 2: Build และทดสอบ
 
