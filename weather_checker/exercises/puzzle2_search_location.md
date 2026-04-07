@@ -1,11 +1,5 @@
 # 🧩 Puzzle 2: เพิ่ม Tool — search_location
 
-## 📖 เป้าหมาย
-เรียนรู้การสร้าง MCP Tool ด้วย `server.registerTool()` — Tool แรกของเรา!
-Tool นี้จะ**ค้นหาตำแหน่งเมือง**เพื่อรับพิกัด latitude/longitude จาก Open-Meteo Geocoding API
-
-## 🔧 ความรู้ที่ต้องใช้
-
 ### `server.registerTool()` คืออะไร?
 เป็น method สำหรับลงทะเบียน tool ใน MCP Server โดยรับ 3 parameters:
 

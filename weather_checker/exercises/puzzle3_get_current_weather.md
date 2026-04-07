@@ -1,40 +1,5 @@
 # 🧩 Puzzle 3: เพิ่ม Tool — get_current_weather
 
-## 📖 เป้าหมาย
-เรียนรู้การกำหนด **input schema ด้วย Zod** — Tool นี้รับพิกัด latitude/longitude แล้วแสดงสภาพอากาศปัจจุบัน
-
-## 🔧 ความรู้ที่ต้องใช้
-
-### Zod คืออะไร?
-Zod เป็น library สำหรับกำหนด schema (รูปแบบข้อมูล) ใน TypeScript ใช้กับ MCP เพื่อบอกว่า tool รับ input อะไรบ้าง
-
-```typescript
-import { z } from "zod";
-
-// ตัวอย่าง Zod schema
-z.string()                          // ต้องเป็น string
-z.string().describe("คำอธิบาย")     // เพิ่มคำอธิบายให้ LLM เข้าใจ
-z.number()                          // ต้องเป็นตัวเลข
-z.number().min(1).max(16)           // ตัวเลขในช่วง 1-16
-```
-
-### `server.registerTool()` กับ Input Schema
-```typescript
-server.registerTool(
-  "tool_name",
-  {
-    description: "description",
-    inputSchema: {
-      param1: z.number().describe("คำอธิบาย param1"),
-      param2: z.number().describe("คำอธิบาย param2"),
-    },
-  },
-  async ({ param1, param2 }) => {
-    return { content: [{ type: "text", text: "ผลลัพธ์" }] };
-  }
-);
-```
-
 ### Open-Meteo Weather API — สภาพอากาศปัจจุบัน
 - URL: `https://api.open-meteo.com/v1/forecast?latitude=13.75&longitude=100.5&current_weather=true`
 - ส่งคืน:
@@ -58,10 +23,11 @@ server.registerTool(
 
 | ช่องว่าง | คำอธิบาย | คำตอบ |
 |----------|----------|-------|
-| `___BLANK_1___` | ชนิดข้อมูล Zod สำหรับ `latitude` | `"number"` |
-| `___BLANK_2___` | ชนิดข้อมูล Zod สำหรับ `longitude` | `"number"` |
-| `___BLANK_3___` | API endpoint | `"forecast"` |
-| `___BLANK_4___` | ชื่อ property ที่เก็บข้อมูลอากาศ | `"current_weather"` |
+| `___BLANK_1___` | คำอธิบาย parameter `latitude` | `"ละติจูด เช่น 13.75"` |
+| `___BLANK_2___` | คำอธิบาย parameter `longitude` | `"ลองจิจูด เช่น 100.5"` |
+| `___BLANK_3___` | ตัวแปรที่เก็บค่า latitude ใน URL | `latitude` |
+| `___BLANK_4___` | ตัวแปรที่เก็บค่า longitude ใน URL + ข้อความนำหน้า | `longitude` / `"สภาพอากาศปัจจุบันที่พิกัด"` |
+| `___BLANK_5___` | ข้อความนำหน้า | `"สภาพอากาศปัจจุบันที่พิกัด"` |
 
 ---
 
@@ -104,25 +70,25 @@ npm run build
 ## 💡 Hints
 
 <details>
-<summary>Hint 1: ชนิดข้อมูล Zod เขียนยังไง?</summary>
+<summary>Hint 1: คำอธิบาย parameter เขียนยังไง?</summary>
 
-พิกัด latitude/longitude เป็นตัวเลขทศนิยม — ชนิดข้อมูลคือ `number`
-โค้ดที่เหลือ `.describe(...)` เขียนให้แล้ว!
+`.describe()` คือคำอธิบายที่บอก LLM ว่า parameter นี้คืออะไร ควรเขียนสั้นๆ และให้ตัวอย่าง
+เช่น `"ละติจูด เช่น 13.75"` หรือ `"ลองจิจูด เช่น 100.5"`
 
 </details>
 
 <details>
-<summary>Hint 2: API endpoint คืออะไร?</summary>
+<summary>Hint 2: ตัวแปรใน URL คืออะไร?</summary>
 
-URL เต็มคือ `https://api.open-meteo.com/v1/forecast?latitude=...&longitude=...&current_weather=true`
-ส่วน `https://api.open-meteo.com/v1/` เขียนให้แล้ว — เติมแค่ `forecast`
+ใน template literal เราต้องใส่ตัวแปรที่รับมาจาก parameter ลงไปใน URL
+เช่น `latitude` และ `longitude` เพื่อสร้าง URL สำหรับเรียก API
 
 </details>
 
 <details>
 <summary>Hint 3: ดูเฉลยเต็ม</summary>
 
-**src/tools/get_current_weather.md:**
+**src/tools/get_current_weather.ts:**
 ```typescript
 export function registerGetCurrentWeather(server: McpServer) {
     server.registerTool(
@@ -144,7 +110,7 @@ export function registerGetCurrentWeather(server: McpServer) {
             return {
                 content: [{
                     type: "text" as const,
-                    text: `🌡️ สภาพอากาศปัจจุบัน (${latitude}, ${longitude}):\n🌡️ อุณหภูมิ: ${weather.temperature}°C\n💨 ลม: ${weather.windspeed} km/h\n🧭 ทิศทางลม: ${weather.winddirection}°\n🕐 เวลา: ${weather.time}`,
+                    text: `🌡️ สภาพอากาศปัจจุบันที่พิกัด (${latitude}, ${longitude}):\n🌡️ อุณหภูมิ: ${weather.temperature}°C\n💨 ลม: ${weather.windspeed} km/h\n🧭 ทิศทางลม: ${weather.winddirection}°\n🕐 เวลา: ${weather.time}`,
                 }],
             };
         }

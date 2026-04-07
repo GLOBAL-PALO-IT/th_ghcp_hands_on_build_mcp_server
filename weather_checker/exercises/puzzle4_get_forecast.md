@@ -46,8 +46,13 @@ data.daily.time.map((date, i) => {
 
 | ช่องว่าง | คำอธิบาย | คำตอบ |
 |----------|----------|-------|
-| `___BLANK_1___` | ชนิดข้อมูล Zod สำหรับ `days` | `"number"` |
-| `___BLANK_2___` | ชื่อ property สำหรับปริมาณฝน | `"precipitation_sum"` |
+| `___BLANK_1___` | คำอธิบาย parameter `latitude` | `"ละติจูด เช่น 13.75"` |
+| `___BLANK_2___` | คำอธิบาย parameter `longitude` | `"ลองจิจูด เช่น 100.5"` |
+| `___BLANK_3___` | คำอธิบาย parameter `days` | `"จำนวนวันที่ต้องการพยากรณ์ (1-16)"` |
+| `___BLANK_4___` | ตัวแปรที่เก็บค่า latitude ใน URL | `latitude` |
+| `___BLANK_5___` | ตัวแปรที่เก็บค่า longitude ใน URL | `longitude` |
+| `___BLANK_6___` | ตัวแปรที่เก็บค่า days ใน URL | `days` |
+| `___BLANK_7___` | ข้อความนำหน้าผลพยากรณ์ | `"พยากรณ์อากาศ"` |
 
 ---
 
@@ -90,25 +95,25 @@ npm run build
 ## 💡 Hints
 
 <details>
-<summary>Hint 1: ชนิดข้อมูล Zod สำหรับจำนวนวัน</summary>
+<summary>Hint 1: คำอธิบาย parameter เขียนยังไง?</summary>
 
-จำนวนวันเป็นตัวเลข — ชนิดข้อมูลคือ `number`
-โค้ดที่เหลือ `.min(1).max(16).describe(...)` เขียนให้แล้ว!
+`.describe()` คือคำอธิบายที่บอก LLM ว่า parameter นี้คืออะไร ควรเขียนสั้นๆ และให้ตัวอย่าง
+เช่น `"ละติจูด เช่น 13.75"`, `"ลองจิจูด เช่น 100.5"`, `"จำนวนวันที่ต้องการพยากรณ์ (1-16)"`
 
 </details>
 
 <details>
-<summary>Hint 2: property ปริมาณฝนชื่ออะไร?</summary>
+<summary>Hint 2: ตัวแปรใน URL คืออะไร?</summary>
 
-ดูจาก API response — ปริมาณฝนอยู่ใน `data.daily.precipitation_sum`
-เติมแค่ `precipitation_sum`
+ใน template literal เราต้องใส่ตัวแปรที่รับมาจาก parameter ลงไปใน URL
+เช่น `latitude`, `longitude`, `days` เพื่อสร้าง URL สำหรับเรียก API
 
 </details>
 
 <details>
 <summary>Hint 3: ดูเฉลยเต็ม</summary>
 
-**src/tools/get_forecast.md:**
+**src/tools/get_forecast.ts:**
 ```typescript
 export function registerGetForecast(server: McpServer) {
     server.registerTool(
@@ -118,6 +123,42 @@ export function registerGetForecast(server: McpServer) {
             inputSchema: {
                 latitude: z.number().describe("ละติจูด เช่น 13.75"),
                 longitude: z.number().describe("ลองจิจูด เช่น 100.5"),
+                days: z.number().min(1).max(16).describe("จำนวนวันที่ต้องการพยากรณ์ (1-16)"),
+            },
+        },
+        async ({ latitude, longitude, days }) => {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=${days}`;
+            const response = await fetch(url);
+            const data = (await response.json()) as { ... };
+
+            const forecastList = data.daily.time
+                .map((date, i) => {
+                    const maxTemp = data.daily.temperature_2m_max[i];
+                    const minTemp = data.daily.temperature_2m_min[i];
+                    const rain = data.daily.precipitation_sum[i];
+                    return `📅 ${date}: 🌡️ ${minTemp}°C - ${maxTemp}°C | 🌧️ ฝน: ${rain} mm`;
+                })
+                .join("\n");
+
+            return {
+                content: [{
+                    type: "text" as const,
+                    text: `📊 พยากรณ์อากาศ ${days} วัน (${latitude}, ${longitude}):\n${forecastList}`,
+                }],
+            };
+        }
+    );
+}
+```
+
+**src/index.ts — uncomment:**
+```typescript
+import { registerGetForecast } from "./tools/get_forecast.js";
+// ...
+registerGetForecast(server);
+```
+
+</details>
                 days: z.number().min(1).max(16).describe("จำนวนวันที่ต้องการพยากรณ์ (1-16)"),
             },
         },
