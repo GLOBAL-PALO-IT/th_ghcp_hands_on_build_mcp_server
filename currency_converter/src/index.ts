@@ -8,9 +8,9 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
 // ===== สร้าง MCP Server =====
 const server = new McpServer({
-    name: "___BLANK_1___",
-    version: "___BLANK_2___",
-    description: "___BLANK_3___",
+    name: "___BLANK_1___", // ใส่ชื่อ server เช่น "Currency Converter"
+    version: "___BLANK_2___", // ใส่เวอร์ชันของ server เช่น "1.0.0"
+    description: "___BLANK_3___", // ใส่คำอธิบาย server เช่น "MCP Server สำหรับแปลงสกุลเงินและดูอัตราแลกเปลี่ยน"
 });
 
 // ===== ลงทะเบียน Tools =====
