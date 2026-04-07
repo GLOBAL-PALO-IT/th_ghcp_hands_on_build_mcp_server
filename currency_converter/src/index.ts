@@ -26,7 +26,7 @@ async function main() {
     // เมื่อ server พร้อมทำงานแล้ว ให้แสดงข้อความนี้ใน console.log เพื่อให้ผู้ใช้รู้ว่า server พร้อมแล้ว
     // คุณจะเติมข้อความอะไรลงในช่อง ___BLANK_4___ เพื่อบอกผู้ใช้ว่า server พร้อมแล้ว? 
     // เช่น "Currency Converter MCP Server is ready!"
-    console.log("___BLANK_4___");
+    console.warn("___BLANK_4___");
 }
 
 main().catch(console.error);

@@ -23,11 +23,6 @@ npm install
 # 2. Build TypeScript → JavaScript
 npm run build
 
-# 3. ทดสอบรัน (ควรเห็นข้อความใน stderr)
-npm start
-# กด Ctrl+C เพื่อหยุด
-```
-
 ---
 
 ## ✏️ ส่วนที่ 3: สร้าง `.vscode/mcp.json`
