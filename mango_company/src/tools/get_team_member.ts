@@ -47,7 +47,7 @@ export function registerGetTeamMember(server: McpServer) {
             // }
 
             // ดึงข้อมูล skills และ projects จาก member
-            const skillsList = data.___BLANK_3___.skills.join(", "); // ใส่ property ของ response data เช่น "member"
+            const skillsList = data.member.skills.join(", ");
             const projectsList = data.member.projects.join(", ");
 
             // ส่งกลับข้อความที่จะแสดงใน UI ของ client
@@ -55,7 +55,14 @@ export function registerGetTeamMember(server: McpServer) {
                 content: [
                     {
                         type: "text" as const,
-                        text: `👤 ${data.member.name}\n📧 Email: ${data.member.email}\n💼 Role: ${data.member.role}\n🛠️ Skills: ${skillsList}\n📌 Projects: ${projectsList}`,
+                        text: `👤 ___BLANK_3___ ${data.member.name}\n📧 Email: ${data.member.email}\n💼 Role: ${data.member.role}\n🛠️ Skills: ${skillsList}\n📌 Projects: ${projectsList}`,
+                        // ใส่ข้อความนำหน้า เช่น "ข้อมูลสมาชิกทีม:"
+                        // ตัวอย่างข้อความที่ส่งกลับจะมีรูปแบบประมาณนี้:
+                        // 👤 ข้อมูลสมาชิกทีม: John Developer
+                        // 📧 Email:
+                        // Role: Senior React Developer
+                        // 🛠️ Skills: React, TypeScript, Node.js
+                        // 📌 Projects: Frontend App, Admin Dashboard
                     },
                 ],
             };

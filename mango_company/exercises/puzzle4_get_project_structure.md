@@ -52,7 +52,7 @@ server.registerTool(
 |----------|----------|----------|
 | `___BLANK_1___` | คำอธิบาย parameter | `"ภาษาที่ต้องการ: Java, React, หรือ Flutter"` |
 | `___BLANK_2___` | API endpoint | `"projects"` |
-| `___BLANK_3___` | property ของ structure | `"structure"` |
+| `___BLANK_3___` | ใส่ข้อความนำหน้า เช่น "โครงสร้าง Project:" | `"โครงสร้าง Project:"` |
 
 ---
 

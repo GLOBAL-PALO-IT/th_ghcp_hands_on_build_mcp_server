@@ -45,7 +45,7 @@ export function registerGetProjectStructure(server: McpServer) {
             // }
 
             // ดึงข้อมูล folders และ files จาก structure
-            const folderList = data.___BLANK_3___.folders.join("\n  - "); // ใส่ property ของ structure เช่น "structure"
+            const folderList = data.structure.folders.join("\n  - ");
             const fileList = data.structure.files.join("\n  - ");
 
             // ส่งกลับข้อความที่จะแสดงใน UI ของ client
@@ -53,7 +53,23 @@ export function registerGetProjectStructure(server: McpServer) {
                 content: [
                     {
                         type: "text" as const,
-                        text: `📁 ${data.structure.name} (${language})\n${data.structure.description}\n\n📂 Folders:\n  - ${folderList}\n\n📄 Key Files:\n  - ${fileList}`,
+                        text: `📁 ___BLANK_3___ ${data.structure.name} (${language})\n${data.structure.description}\n\n📂 Folders:\n  - ${folderList}\n\n📄 Key Files:\n  - ${fileList}`,
+                        // ใส่ข้อความนำหน้า เช่น "โครงสร้าง Project:"
+                        // ตัวอย่างข้อความที่ส่งกลับจะมีรูปแบบประมาณนี้:
+                        // 📁 โครงสร้าง Project: React Frontend App (React)
+                        // Main user-facing React application
+                        //
+                        // 📂 Folders
+                        // - src    
+                        // - public
+                        // - tests
+                        // - components
+                        // - hooks
+                        //
+                        // 📄 Key Files
+                        // - App.tsx
+                        // - index.tsx
+                        // - package.json:
                     },
                 ],
             };

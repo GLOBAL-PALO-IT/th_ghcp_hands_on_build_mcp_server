@@ -51,7 +51,7 @@ const data = (await response.json()) as {
 |----------|----------|----------|
 | `___BLANK_1___` | คำอธิบาย parameter | `"ชื่อหรือ ID ของสมาชิกทีม เช่น john_dev หรือ T001"` |
 | `___BLANK_2___` | API endpoint | `"team"` |
-| `___BLANK_3___` | property ของ response data | `"member"` |
+| `___BLANK_3___` | ส่ข้อความนำหน้า | `"ข้อมูลสมาชิกทีม:"` |
 
 ---
 
