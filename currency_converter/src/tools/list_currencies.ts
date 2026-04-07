@@ -7,11 +7,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 export function registerListCurrencies(server: McpServer) {
     server.tool(
-        "___BLANK_1___",           // ใส่ชื่อ tool เช่น "list_currencies"
-        "___BLANK_2___",           // ใส่คำอธิบาย tool เช่น "แสดงรายการสกุลเงินทั้งหมดที่รองรับ"
+        "list_currencies",           // ใส่ชื่อ tool เช่น "list_currencies"
+        "แสดงรายการสกุลเงินทั้งหมดที่รองรับ",           // ใส่คำอธิบาย tool เช่น "แสดงรายการสกุลเงินทั้งหมดที่รองรับ"
         {},                        // ไม่มี input parameters
         async () => {
-            const response = await fetch("___BLANK_3___"); // ใส่ URL ของ API: https://open.er-api.com/v6/latest/USD
+            const response = await fetch("https://open.er-api.com/v6/latest/USD"); // ใส่ URL ของ API: https://open.er-api.com/v6/latest/USD
             const data = (await response.json()) as {
                 result: string;
                 base_code: string;
@@ -25,7 +25,7 @@ export function registerListCurrencies(server: McpServer) {
                 content: [
                     {
                         type: "text" as const,
-                        text: `___BLANK_4___${currencyList}`, // ใส่ข้อความนำหน้า เช่น "สกุลเงินที่รองรับ:\n"
+                        text: `สกุลเงินที่รองรับ:\n${currencyList}`, // ใส่ข้อความนำหน้า เช่น "สกุลเงินที่รองรับ:\n"
                     },
                 ],
             };

@@ -1,55 +1,43 @@
 #!/usr/bin/env node
-
 import express from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import { registerSearchLocation } from "./tools/search_location.js";
-import { registerGetCurrentWeather } from "./tools/get_current_weather.js";
-import { registerGetForecast } from "./tools/get_forecast.js";
-
+// import { registerSearchLocation } from "./tools/search_location.js";
+// import { registerGetCurrentWeather } from "./tools/get_current_weather.js";
+// import { registerGetForecast } from "./tools/get_forecast.js";
 // ===== สร้าง MCP Server =====
 const server = new McpServer({
     name: "weather-checker",
     version: "1.0.0",
     description: "MCP Server สำหรับเช็คสภาพอากาศ (HTTP Remote)",
 });
-
 // ===== ลงทะเบียน Tools =====
-registerSearchLocation(server);
-registerGetCurrentWeather(server);
-registerGetForecast(server);
-
+// registerSearchLocation(server);
+// registerGetCurrentWeather(server);
+// registerGetForecast(server);
 // ===== เชื่อมต่อ Server กับ HTTP Transport (SSE) =====
 const app = express();
-
 // เก็บ transport instances สำหรับแต่ละ session
-const transports: Record<string, SSEServerTransport> = {};
-
+const transports = {};
 // SSE endpoint — client เชื่อมต่อที่นี่
-app.get("/sse", async (_req: express.Request, res: express.Response) => {
+app.get("/sse", async (_req, res) => {
     const transport = new SSEServerTransport("/messages", res);
     transports[transport.sessionId] = transport;
-
     res.on("close", () => {
         delete transports[transport.sessionId];
     });
-
     await server.connect(transport);
 });
-
 // Message endpoint — client ส่ง message มาที่นี่
-app.post("/messages", async (req: express.Request, res: express.Response) => {
-    const sessionId = req.query.sessionId as string;
+app.post("/messages", async (req, res) => {
+    const sessionId = req.query.sessionId;
     const transport = transports[sessionId];
-
     if (!transport) {
         res.status(400).json({ error: "Invalid session ID" });
         return;
     }
-
     await transport.handlePostMessage(req, res);
 });
-
 // เริ่ม HTTP Server
 const PORT = 3001;
 app.listen(PORT, () => {

@@ -60,21 +60,15 @@ await server.connect(transport);
 
 เปิดไฟล์ `src/index.ts` แล้วหา Puzzle 1 เติมช่องว่างเหล่านี้:
 
-### ส่วนบน — สร้าง McpServer
+### สร้าง McpServer
 
 | ช่องว่าง | คำอธิบาย | ตัวอย่าง |
 |----------|----------|----------|
 | `___BLANK_1___` | ชื่อ server | `"currency-converter"` |
 | `___BLANK_2___` | เวอร์ชัน server | `"1.0.0"` |
+| `___BLANK_3___` | คำอธิบาย server | `"MCP Server สำหรับแปลงสกุลเงิน"` |
+| `___BLANK_4___` | คำอธิบาย server | `"Currency Converter MCP Server is running..."` |
 
-### ส่วนล่าง — เชื่อมต่อ Transport
-
-| ช่องว่าง | คำอธิบาย | ตัวอย่าง |
-|----------|----------|----------|
-| `___BLANK_3___` | Class ของ transport | `StdioServerTransport` |
-| `___BLANK_4___` | Method สำหรับเชื่อมต่อ | `connect` |
-
----
 
 ## ✏️ ส่วนที่ 2: Build และทดสอบ
 
