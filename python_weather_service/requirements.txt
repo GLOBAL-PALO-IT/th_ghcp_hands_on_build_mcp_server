@@ -1,0 +1,8 @@
+# MCP Workshop - Essential Dependencies Only
+# Python version requirement: >=3.10
+
+# Mock Services (FastAPI) - Let pip resolve compatible versions
+fastapi
+uvicorn[standard]
+httpx
+pytz 
