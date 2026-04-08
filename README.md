@@ -5,7 +5,7 @@
 | โปรเจกต์ | Transport | ระดับ | คำอธิบาย |
 |----------|-----------|-------|----------|
 | 🔄 [Currency Converter](#-currency-converter--stdio-mcp-server) | Stdio | Beginner | แปลงสกุลเงินด้วย frankfurter.app API |
-| 🌤️ [Weather Checker](#️-weather-checker--stdio-mcp-server) | Stdio | Beginner | ค้นหาสภาพอากาศด้วย Open-Meteo API |
+| 🌤️ [Weather Checker](#️-weather-checker--stdio-mcp-server) | HTTP Remote | Beginner | ค้นหาสภาพอากาศด้วย Open-Meteo API |
 | 🥭 [Mango Company](#-mango-company--http-remote-mcp-server) | HTTP Remote | Intermediate | จัดการข้อมูลบริษัทด้วย Mock API |
 
 ## 🛠️ Pre-requisites
